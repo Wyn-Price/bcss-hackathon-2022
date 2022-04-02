@@ -3,8 +3,8 @@ import Connection from './connection/Connection';
 import { ConnectionManager, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
 import { useListenableObject } from './ListenableObject';
-import { ReplyToEachotherMinigame } from './MiniGames/Minigame';
-import TypeToEachOtherGame from './MiniGames/TypeToEachOtherGame';
+import { stat } from 'fs';
+import { minigames, MinigameScreens } from './minigames/MinigameData';
 
 const defaultState = "none"
 
@@ -69,17 +69,65 @@ const App = () => {
     return <div>Connection is undefined, but we're playing?</div>
   }
 
-  //For testing purposes:
-  if (gameEngineRef.current && gameEngineRef.current.currentGame == null) {
-    const ge = gameEngineRef.current
-    ge.currentGame = new ReplyToEachotherMinigame(ge.player1, ge.player2)
-  }
+  // //For testing purposes:
+  // if (gameEngineRef.current && gameEngineRef.current.currentGame == null) {
+  //   const ge = gameEngineRef.current
+  //   ge.currentGame = new ReplyToEachotherMinigame(ge.player1, ge.player2)
+  // }
 
   return (
     <>
-      <TypeToEachOtherGame connection={connectionManager} />
+      <GameArea conn={connectionManager} />
+      {/* <TypeToEachOtherGame connection={connectionManager} /> */}
     </>
   );
+}
+
+// type GameType = {
+//   setMinigame: (game: typeof minigames[number]) => void
+//   endMinigame: () => void
+// }
+// const GameContext = createContext<GameType | null>(null)
+// const useGameContext = () => {
+//   const context = useContext(GameContext)
+//   if (context === null) throw new Error("useGameContext must be called between providers");
+//   return context
+// }
+const GameArea = ({ conn }: { conn: ConnectionManager }) => {
+  const [minigame, setMinigame] = useState<typeof minigames[number] | null>(null)
+
+  useEffect(() => conn.subscribeToDataRecieved(data => {
+    if (data.isInternalMessage === true) {
+      if (data.endMinigame === true) {
+        setMinigame(null)
+      }
+      if (data.startMinigame !== undefined) {
+        setMinigame(data.startMinigame)
+      }
+    }
+  }), [conn])
+  if (minigame !== null) {
+    const Screen = MinigameScreens[minigame]
+    return <Screen conn={conn} />
+  }
+  return (
+    <>
+      <BattleShips conn={conn} />
+    </ >
+  )
+}
+
+const BattleShips = ({ conn }: { conn: ConnectionManager }) => {
+  return (
+    <div>
+      Battleships area. Click to start minigame:
+      {minigames.map(mg => (
+        <div key={mg} onClick={() => conn.sendDataToEngine({ changeGameTo: mg })}>
+          {mg}
+        </div>
+      ))}
+    </div>
+  )
 }
 
 const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection, startPlaying: () => void }) => {

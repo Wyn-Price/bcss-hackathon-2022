@@ -33,7 +33,6 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManager => 
 export const createRemoteManager = (connection: Connection, gameEngine: GameEngine): ConnectionManager => {
   const listeners = new Set<(data: any) => void>()
   connection.onDataRecieved(data => {
-    console.log("RECIEVE_DATA", data)
     gameEngine?.dataRecieved(player, data)
 
   })
@@ -43,12 +42,11 @@ export const createRemoteManager = (connection: Connection, gameEngine: GameEngi
       throw new Error("Tried to send data from host side. Please use replyData")
     },
     replyDataFromEngine(data) {
-      console.trace("SEND_REPLY _DATA", data)
       connection.send(data)
     },
     subscribeToDataRecieved(func) {
-      listeners.add(func)
-      return () => { listeners.delete(func) }
+      return () => { }
+      // throw new Error("Tried to subscribe to host side remote")
     }
   }
   return player
@@ -58,7 +56,6 @@ export const createRemoteManager = (connection: Connection, gameEngine: GameEngi
 export const createRemoteGameListener = (connection: Connection) => {
   const listeners = new Set<(data: any) => void>()
   connection.onDataRecieved(data => {
-    console.log("RECIEVE_DATA", data)
     listeners.forEach(listener => listener(data))
   })
   const player: ConnectionManager = {
@@ -79,5 +76,9 @@ export const createRemoteGameListener = (connection: Connection) => {
 }
 
 export const useDataRecieved = (conn: ConnectionManager, func: (data: any) => void) => {
-  return useEffect(() => conn.subscribeToDataRecieved(func), [conn])
+  return useEffect(() => conn.subscribeToDataRecieved(data => {
+    if (data.isInternalMessage === undefined) {
+      func(data)
+    }
+  }), [conn])
 }

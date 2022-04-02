@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import { Minigame } from "./Minigame";
 
-const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
-  const [waitingForClick, setWaitingForClick] = useState(false)
+export const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
+  const [waitingForClick, setWaitingForClick] = useState(true)
   const [hasClicked, setHasClicked] = useState(false)
 
   useDataRecieved(connection, data => {
@@ -16,15 +16,16 @@ const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
   // check time after screen has been pressed
   const clickHandler: () => void = () => {
     connection.sendDataToEngine({ setReactionTime: true })
+    setHasClicked(true)
   };
 
   return (
     <div
       id="reaction-screen min-h-screen"
-      className={(waitingForClick ? "bg-gray-500" : "bg-green-500") + " min-h-screen flex justify-center items-center"}
+      className={(hasClicked ? "bg-blue-500" : (waitingForClick ? "bg-gray-500" : "bg-green-500")) + " min-h-screen flex justify-center items-center"}
       onClick={clickHandler}
     >
-      <h2 onClick={clickHandler}>Click when green</h2>
+      <h2 onClick={clickHandler}>{hasClicked ? "Clicked :)" : (waitingForClick ? "Click When Green" : "CLICK!!")}</h2>
     </div>
   );
 };
@@ -32,8 +33,8 @@ const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
 //This is only run on the host.
 export class ReactionTimeMinigame extends Minigame {
 
-  player1ReactionTime?: number
-  player2ReactionTime?: number
+  player1ReactionTime?: boolean
+  player2ReactionTime?: boolean
 
   constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
     super(player1, player2)
@@ -53,9 +54,11 @@ export class ReactionTimeMinigame extends Minigame {
       }
 
       //If both players have pressed, then end the game.
-
+      //TODO: proceed the main game 
+      if (this.player1ReactionTime !== undefined && this.player2ReactionTime !== undefined) {
+        this.player1?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
+        this.player2?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
+      }
     }
   }
 }
-
-export default ReactionTime;
