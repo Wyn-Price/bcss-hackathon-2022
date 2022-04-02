@@ -1,0 +1,13 @@
+{
+  "name": "peerserver",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "peer": "^0.6.1"
+  }
+}
