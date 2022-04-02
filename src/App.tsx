@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import TypeToEachOtherGame from './minigames/TypeToEachOtherGame';
+import Connection from './connection/Connection';
 import { ConnectionManager, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
-import Connection from './connection/Connection';
 import { useListenableObject } from './ListenableObject';
-import { stat } from 'fs';
-import { ReplyToEachotherMinigame } from './minigames/Minigame';
+import { ReplyToEachotherMinigame } from './MiniGames/Minigame';
+import TypeToEachOtherGame from './MiniGames/TypeToEachOtherGame';
 
 const defaultState = "none"
 

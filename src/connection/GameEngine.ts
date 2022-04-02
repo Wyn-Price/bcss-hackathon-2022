@@ -1,4 +1,4 @@
-import { Minigame } from '../minigames/Minigame';
+import { Minigame } from '../MiniGames/Minigame';
 import { ConnectionManager } from './ConnectionManager';
 
 // export interface GameEngine {

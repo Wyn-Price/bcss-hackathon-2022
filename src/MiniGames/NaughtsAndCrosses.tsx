@@ -40,12 +40,9 @@ const NaughtsAndCrosses = () => {
 
         updateWins(typesOfWins)
 
-        if (!gameEnded) {
-            if (wins.some(element => element)) {
-                // Do something to show games ended
-            }
-
-
+        if (typesOfWins.some(element => element)) {
+            // Do something to show games ended
+            alert("W")
         }
     }
 
