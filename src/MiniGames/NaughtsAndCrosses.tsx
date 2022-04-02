@@ -1,5 +1,5 @@
-import React from "react";
-import { ConnectionManager } from "../connection/ConnectionManager";
+import React, { useState } from "react";
+import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
 import { Minigame } from "./Minigame";
@@ -8,53 +8,51 @@ import { Minigame } from "./Minigame";
 // if (!container) throw new Error("Missing root element")
 // const root = ReactDOMClient.createRoot(container)
 
-const NaughtsAndCrosses = () => {
-    // if cross = true, then shape is cross, else shape is circle
-    const [cross, updateCross] = React.useState(false);
-    const [wins, updateWins] = React.useState([false, false, false, false, false, false, false, false, false]);
-    const [gameEnded, updateGameEnded] = React.useState(false);
-    const [texts, updateTexts] = React.useState(["", "", "", "", "", "", "", "", ""]);
+const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) => {
+    // fetched from network
+    const [awaitingTurn, setAwaitingTurn] = useState(false);
+    const [board, setBoard] = React.useState(["", "", "", "", "", "", "", "", ""]);
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-    const checkForWin = () => {
-        let win1 = texts[0] == texts[1] && texts[0] == texts[2] && texts[0] != "";
-        let win2 = texts[3] == texts[4] && texts[3] == texts[5] && texts[3] != "";
-        let win3 = texts[6] == texts[7] && texts[6] == texts[8] && texts[6] != "";
+    // get data from server
+    useDataRecieved(connection, (data) => {
+        setAwaitingTurn(data.readyToChoose);
+        setBoard(data.board);
+        checkForWin(false);
+    });
 
-        let win4 = texts[0] == texts[3] && texts[0] == texts[6] && texts[0] != "";
-        let win5 = texts[1] == texts[4] && texts[1] == texts[7] && texts[1] != "";
-        let win6 = texts[2] == texts[8] && texts[2] == texts[5] && texts[2] != "";
+    const checkForWin = (report: boolean) => {
+        let win1 = board[0] == board[1] && board[0] == board[2] && board[0] != "";
+        let win2 = board[3] == board[4] && board[3] == board[5] && board[3] != "";
+        let win3 = board[6] == board[7] && board[6] == board[8] && board[6] != "";
 
-        let win7 = texts[0] == texts[4] && texts[0] == texts[8] && texts[0] != "";
-        let win8 = texts[2] == texts[4] && texts[2] == texts[6] && texts[2] != "";
+        let win4 = board[0] == board[3] && board[0] == board[6] && board[0] != "";
+        let win5 = board[1] == board[4] && board[1] == board[7] && board[1] != "";
+        let win6 = board[2] == board[8] && board[2] == board[5] && board[2] != "";
+
+        let win7 = board[0] == board[4] && board[0] == board[8] && board[0] != "";
+        let win8 = board[2] == board[4] && board[2] == board[6] && board[2] != "";
 
         let typesOfWins = [win1, win2, win3, win4, win5, win6, win7, win8];
 
-        updateWins(typesOfWins);
-
         if (typesOfWins.some((element) => element)) {
-            // Do something to show games ended
-            alert("W");
+            // update UI to show win here !!
+            if (report) {
+                // reports it to server, doesn't when board has been received
+                connection.sendDataToEngine({ won: true });
+            }
         }
     };
 
     const registerClick = ({ pos }: { pos: number }) => {
-        if (texts[pos] == "") {
-            if (cross) {
-                texts[pos] = "X";
-            } else {
-                texts[pos] = "O";
-            }
-            updateTexts(texts);
-            updateCross(!cross);
-        }
-        checkForWin();
+        checkForWin(true);
+        connection.sendDataToEngine({ turnEnded: true, position: pos });
     };
 
-    const Square = ({ pos }: { pos: number }) => {
+    const Square = ({ pos, clickable }: { pos: number; clickable: boolean }) => {
         return (
-            <div className="bg-white flex items-center justify-center rounded-full" onClick={() => registerClick({ pos })}>
-                <header className="text-5xl text-purple-600">{texts[pos]}</header>
+            <div className="bg-white flex items-center justify-center rounded-full" onClick={clickable ? () => registerClick({ pos }) : () => {}}>
+                <header className="text-5xl text-purple-600">{board[pos]}</header>
             </div>
         );
     };
@@ -67,7 +65,7 @@ const NaughtsAndCrosses = () => {
             <div id="board" className="flex h-screen items-center justify-center">
                 <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-2 rounded-2xl mb-28">
                     {numbers.map((number) => (
-                        <Square pos={number}></Square>
+                        <Square pos={number} clickable={awaitingTurn}></Square>
                     ))}
                 </div>
             </div>
@@ -82,48 +80,52 @@ const playMove = (cross: boolean) => {
 export default NaughtsAndCrosses;
 
 export class NaughtsAndCrossesMinigame extends Minigame {
-    p1choice?: number;
-    p2choice?: number;
-    next: number = 1;
+    board: string[];
+    p1token = "X";
+    p2token = "O";
 
     constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
         super(gameEngine, player1, player2);
 
         // game setup
-        this.next = 1;
+        this.board = ["", "", "", "", "", "", "", "", ""];
 
         // this sends the data to each client, a client
         // receives this from the useDataReceived hook
-        player1?.replyDataFromEngine({ readyToChoose: true });
-        player2?.replyDataFromEngine({ readyToChoose: false });
+        player1?.replyDataFromEngine({ readyToChoose: true, board: this.board });
+        player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+    }
+
+    player1TurnEnded(pos: number) {
+        this.board[pos] = this.p1token;
+        this.player1?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: true, board: this.board });
+    }
+
+    player2TurnEnded(pos: number) {
+        this.board[pos] = this.p2token;
+        this.player1?.replyDataFromEngine({ readyToChoose: true, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
-        // receive the data
-        if (data.choice !== undefined) {
+        // end game on a winner
+        if (data.won !== undefined) {
             if (player.player1) {
-                this.p1choice = data.choice;
-                this.player1?.replyDataFromEngine({ readyToChoose: false });
+                this.engine.playerOneWin();
             } else {
-                this.p2choice = data.choice;
-                this.player2?.replyDataFromEngine({ readyToChoose: false });
+                this.engine.playerTwoWin();
             }
+            this.player1?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+            this.player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
         }
 
-        // If both players have finished, determine winner
-        if (this.p1choice !== undefined && this.p2choice !== undefined) {
-            // handle draw
-            if (this.p1choice === this.p2choice) {
+        // when one player's turn ends
+        if (data.turnEnded) {
+            if (player.player1) {
+                this.player1TurnEnded(data.position);
             } else {
-                // determine winner
-                this.player1?.replyDataFromEngine({
-                    isInternalMessage: true,
-                    endMinigame: true,
-                });
-                this.player2?.replyDataFromEngine({
-                    isInternalMessage: true,
-                    endMinigame: true,
-                });
+                this.player2TurnEnded(data.position);
             }
         }
     }
