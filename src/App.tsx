@@ -107,11 +107,16 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
         //         y: number;
         //     };
         //     newTile: "fire_miss" | "fire_hit";
-        //     self: boolean
+        //     self: boolean;
         // }
         const tileSet = data.self ? conn.playerState.myTiles : conn.playerState.otherTiles
         tileSet[data.grid.x][data.grid.y] = data.newTile
-        conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value
+
+        //Only change turns when the game is either lost, or the it's a miss
+        const didPlayerWhoseTurnItWasWin = conn.playerState.isSelfTurn.value !== data.self
+        if (didPlayerWhoseTurnItWasWin || data.newTile !== "fire_hit") {
+          conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value
+        }
         setMinigame(null)
       }
       if (data.startMinigame !== undefined) {
