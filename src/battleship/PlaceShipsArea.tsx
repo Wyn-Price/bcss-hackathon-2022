@@ -12,6 +12,7 @@ export const PlaceShipsArea = () => {
         <PlacedShips />
       </Grid>
       <UnplacedShips />
+      <DebugPlaceButton />
     </div>
   )
 }
@@ -131,5 +132,29 @@ const PlacingShipsTile = ({ x, y }: { x: number, y: number }) => {
         {/* {x}, {y} */}
       </div>
     </div>
+  )
+}
+
+const DebugPlaceButton = () => {
+  const { playerState, connection } = usePlayerGameState()
+  const [placedShips] = useListenableObject(playerState.prePlaceShipPositions)
+  const allShips = [...ALL_SHIPS].filter(ship => !placedShips.some(ps => ps.ship === ship))
+  const place = () => {
+    allShips.forEach((ship, index) => {
+      const placement = new ShipPosition(ship, { x: 0, y: index }, false)
+      playerState.myShips.set(ship, placement)
+      playerState.prePlaceShipPositions.value = playerState.prePlaceShipPositions.value.concat(placement)
+      playerState.playingShipPosition.value = null
+    })
+    connection.sendDataToEngine({
+      shipsSet: playerState.prePlaceShipPositions.value.map(pos => ({
+        ship: pos.ship.name,
+        grid: { ...pos.gridIndex },
+        rotated: pos.rotated
+      }))
+    })
+  }
+  return (
+    <button onClick={place} className="bg-green-800 rounded p-2">Debug place</button>
   )
 }

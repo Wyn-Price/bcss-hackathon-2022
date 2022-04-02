@@ -100,6 +100,16 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   useEffect(() => conn.subscribeToDataRecieved(data => {
     if (data.isInternalMessage === true) {
       if (data.endMinigame === true) {
+        //   {
+        //     grid: {
+        //         x: number;
+        //         y: number;
+        //     };
+        //     newTile: "fire_miss" | "fire_hit";
+        //     self: boolean
+        // }
+        const tileSet = data.self ? conn.playerState.myTiles : conn.playerState.otherTiles
+        tileSet[data.grid.x][data.grid.y] = data.newTile
         setMinigame(null)
       }
       if (data.startMinigame !== undefined) {

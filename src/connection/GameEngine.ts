@@ -1,7 +1,8 @@
 import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
 import { Minigame } from '../MiniGames/Minigame';
 import { ConnectionManager } from './ConnectionManager';
-import { PlayerGameState, EnginePlayerGameState, findShipByName, ShipPosition } from './BattleShipsGameData';
+import { PlayerGameState, EnginePlayerGameState, findShipByName, ShipPosition, TileState } from './BattleShipsGameData';
+import { isNonNullChain } from 'typescript';
 
 
 export default class GameEngine {
@@ -27,25 +28,36 @@ export default class GameEngine {
   }
 
   playerOneWin() {
-    this.sendBackToBattleships()
+    console.log("p1 wins")
+    this.fireAndUpdateClients(this.player1, this.player2State, this.player2)
   }
 
   playerTwoWin() {
-    this.sendBackToBattleships()
+    console.log("p2 wins")
+    this.fireAndUpdateClients(this.player2, this.player1State, this.player1)
   }
 
-  private sendBackToBattleships() {
-    this.player1?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
-    this.player2?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
+  private fireAndUpdateClients(winner: ConnectionManager | undefined, loserState: EnginePlayerGameState, loser: ConnectionManager | undefined) {
+    if (this.gridPositionInQuestion === undefined) {
+      console.error("Tried to finish an unstarted game?")
+      return
+    }
+
+    const grid = this.gridPositionInQuestion
+    const isShip = Array.from(loserState.myShips.values()).some(ship => ship.getListOfPosition().some(pos => pos.x === grid.x && pos.y === grid.y))
+    const newTile: TileState = isShip ? "fire_hit" : "fire_miss"
+    loserState.myTiles[this.gridPositionInQuestion.x][this.gridPositionInQuestion.y] = newTile
+
+    const data = { isInternalMessage: true, grid: this.gridPositionInQuestion, newTile, endMinigame: true }
+    winner?.replyDataFromEngine({ ...data, self: false })
+    loser?.replyDataFromEngine({ ...data, self: true })
+
+    this.gridPositionInQuestion = undefined
   }
 
   dataRecieved(player: ConnectionManager, data: any) {
     if (data.changeGameTo !== undefined) {
-      const mg = data.changeGameTo as typeof minigames[number]
-      this.currentGame = MinigameCreators[mg](this, this.player1, this.player2)
-      const dataToSend = { isInternalMessage: true, startMinigame: data.changeGameTo }
-      this.player1?.replyDataFromEngine(dataToSend)
-      this.player2?.replyDataFromEngine(dataToSend)
+      this.setGameTo(data.changeGameTo)
       return
     }
     if (this.currentGame) {
@@ -53,6 +65,13 @@ export default class GameEngine {
     } else {
       this._battleshipDataRecieved(player, data)
     }
+  }
+
+  private setGameTo(mg: typeof minigames[number]) {
+    const dataToSend = { isInternalMessage: true, startMinigame: mg }
+    this.currentGame = MinigameCreators[mg](this, this.player1, this.player2)
+    this.player1?.replyDataFromEngine(dataToSend)
+    this.player2?.replyDataFromEngine(dataToSend)
   }
 
   private _battleshipDataRecieved(player: ConnectionManager, data: any) {
@@ -66,9 +85,7 @@ export default class GameEngine {
   private _battleshipGridClicked(gameTurnClickedGrid: { x: number; y: number }) {
     this.gridPositionInQuestion = gameTurnClickedGrid
     const minigame = minigames[Math.floor(minigames.length * Math.random())]
-    const dataToSend = { isInternalMessage: true, startMinigame: minigame }
-    this.player1?.replyDataFromEngine(dataToSend)
-    this.player2?.replyDataFromEngine(dataToSend)
+    this.setGameTo(minigame)
   }
 
   private _battleshipSetShips(player: ConnectionManager, setShips: {

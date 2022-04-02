@@ -6,7 +6,7 @@ import { ReactionTime, ReactionTimeMinigame } from "./ReactionTime"
 export const minigames = ["reaction-time"] as const
 
 export const MinigameCreators: Record<typeof minigames[number], (gameEngine: GameEngine, p1?: ConnectionManager, p2?: ConnectionManager) => Minigame> = {
-  "reaction-time": (p1, p2) => new ReactionTimeMinigame(p1, p2)
+  "reaction-time": (ge, p1, p2) => new ReactionTimeMinigame(ge, p1, p2)
 }
 
 export const MinigameScreens: Record<typeof minigames[number], ({ conn }: { conn: ConnectionManager }) => JSX.Element> = {
