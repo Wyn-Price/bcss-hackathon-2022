@@ -73,7 +73,7 @@ export class ReactionTimeMinigame extends Minigame {
       } else {
         this.player2ReactionTime = true
         if (this.runningTimeout !== null) {
-          this.player1ReactionTimeWasBeforeGreen = true
+          this.player2ReactionTimeWasBeforeGreen = true
         }
       }
 
@@ -84,8 +84,10 @@ export class ReactionTimeMinigame extends Minigame {
           clearTimeout(this.runningTimeout)
           this.sendTimeout()
 
-          this.player1.replyDataFromEngine({ needsResetting: true })
-          this.player2.replyDataFromEngine({ needsResetting: true })
+          setTimeout(() => {
+            this.player1.replyDataFromEngine({ needsResetting: true })
+            this.player2.replyDataFromEngine({ needsResetting: true })
+          }, 500)
 
         } else {
           if (player.player1) {

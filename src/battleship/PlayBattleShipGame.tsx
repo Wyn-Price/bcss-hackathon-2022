@@ -16,7 +16,7 @@ export const PlayBattleShipGame = () => {
     <div className="h-full flex flex-col items-center justify-center gap-10">
       <div className="w-full flex flex-row items-center justify-center gap-10">
         <GridWithShips ships={playerState.myShips} Tile={PlacingShipsTile(false, connection, playerState.myTiles)} />
-        <GridWithShips ships={playerState.otherShips} Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
+        <GridWithShips Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
       </div>
       <div>{isSelfTurn ? "Your Turn" : "Their Turn"}</div>
 
@@ -25,10 +25,10 @@ export const PlayBattleShipGame = () => {
   )
 }
 
-const GridWithShips = ({ ships, Tile }: { ships: Map<Ship, ShipPosition>, Tile: (props: { x: number, y: number }) => JSX.Element }) => {
+const GridWithShips = ({ ships, Tile }: { ships?: Map<Ship, ShipPosition>, Tile: (props: { x: number, y: number }) => JSX.Element }) => {
   return (
     <Grid Tile={Tile}>
-      {Array.from(ships.values()).map((pos, index) => <PlacedShipsVisual key={index} shipPos={pos} />)}
+      {ships && Array.from(ships.values()).map((pos, index) => <PlacedShipsVisual key={index} shipPos={pos} />)}
     </Grid>
   )
 }

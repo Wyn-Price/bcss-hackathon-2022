@@ -7,6 +7,8 @@ import { stat } from 'fs';
 import { minigames, MinigameScreens } from './MiniGames/MinigameData';
 import { BattleShipsGame } from './battleship/BattleShipGame';
 import { Minigame } from './MiniGames/Minigame';
+import WinScreen from './EndScreens/WinScreen';
+import LoseScreen from './EndScreens/LoseScreen';
 
 const defaultState = "none"
 
@@ -97,9 +99,21 @@ const App = () => {
 // }
 const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   const [minigame, setMinigame] = useState<typeof minigames[number] | null>(null)
+  const [gameOver, setGameOver] = useState<"winner" | "loser">()
+
+  const [timesResetHack, setTimesResetHack] = useState(0)
 
   useEffect(() => conn.subscribeToDataRecieved(data => {
     if (data.isInternalMessage === true) {
+      if (data.gameOverIsWinner !== undefined) {
+        setGameOver(data.gameOverIsWinner ? "winner" : "loser")
+        setMinigame(null)
+      }
+      if (data.reset === true) {
+        setGameOver(undefined)
+        conn.reset()
+        setTimesResetHack(timesResetHack + 1)
+      }
       if (data.endMinigame === true) {
         //   {
         //     grid: {
@@ -107,11 +121,16 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
         //         y: number;
         //     };
         //     newTile: "fire_miss" | "fire_hit";
-        //     self: boolean
+        //     self: boolean;
         // }
         const tileSet = data.self ? conn.playerState.myTiles : conn.playerState.otherTiles
         tileSet[data.grid.x][data.grid.y] = data.newTile
-        conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value
+
+        //Only change turns when the game is either lost, or the it's a miss
+        const didPlayerWhoseTurnItWasWin = conn.playerState.isSelfTurn.value === data.self
+        if (didPlayerWhoseTurnItWasWin || data.newTile !== "fire_hit") {
+          conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value
+        }
         setMinigame(null)
       }
       if (data.startMinigame !== undefined) {
@@ -119,12 +138,18 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
       }
     }
   }, true), [conn])
+  if (gameOver !== undefined) {
+    const playAgain = () => {
+      conn.sendDataToEngine({ resetBothClients: true })
+    }
+    return gameOver === "winner" ? <WinScreen playAgain={playAgain} /> : <LoseScreen playAgain={playAgain} />
+  }
   if (minigame !== null) {
-    return <MinigameScreen minigame={minigame} conn={conn} />
+    return <MinigameScreen key={timesResetHack} minigame={minigame} conn={conn} />
   }
   return (
     <>
-      <BattleShips conn={conn} />
+      <BattleShips key={timesResetHack} conn={conn} />
     </ >
   )
 }

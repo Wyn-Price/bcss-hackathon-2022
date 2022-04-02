@@ -29,15 +29,15 @@ export default class GameEngine {
 
   playerOneWin() {
     console.log("p1 wins")
-    this.fireAndUpdateClients(this.player1, this.player2State, this.player2)
+    this.endMinigameAndFireMissile(this.player1, this.player2State, this.player2)
   }
 
   playerTwoWin() {
     console.log("p2 wins")
-    this.fireAndUpdateClients(this.player2, this.player1State, this.player1)
+    this.endMinigameAndFireMissile(this.player2, this.player1State, this.player1)
   }
 
-  private fireAndUpdateClients(winner: ConnectionManager | undefined, loserState: EnginePlayerGameState, loser: ConnectionManager | undefined) {
+  private endMinigameAndFireMissile(winner: ConnectionManager | undefined, loserState: EnginePlayerGameState, loser: ConnectionManager | undefined) {
     if (this.gridPositionInQuestion === undefined) {
       console.error("Tried to finish an unstarted game?")
       return
@@ -48,15 +48,36 @@ export default class GameEngine {
     const newTile: TileState = isShip ? "fire_hit" : "fire_miss"
     loserState.myTiles[this.gridPositionInQuestion.x][this.gridPositionInQuestion.y] = newTile
 
-    const data = { isInternalMessage: true, grid: this.gridPositionInQuestion, newTile, endMinigame: true }
-    winner?.replyDataFromEngine({ ...data, self: false })
-    loser?.replyDataFromEngine({ ...data, self: true })
+    const isGameOver = Array.from(loserState.myShips.values()).every(shipPos =>
+      shipPos.getListOfPosition().every(pos =>
+        loserState.myTiles[pos.x][pos.y] === "fire_hit"
+      )
+    )
+
+    console.log(isGameOver)
+
+    if (isGameOver) {
+      winner?.replyDataFromEngine({ isInternalMessage: true, gameOverIsWinner: true })
+      loser?.replyDataFromEngine({ isInternalMessage: true, gameOverIsWinner: false })
+    } else {
+      const data = { isInternalMessage: true, grid: this.gridPositionInQuestion, newTile, endMinigame: true }
+      winner?.replyDataFromEngine({ ...data, self: false })
+      loser?.replyDataFromEngine({ ...data, self: true })
+    }
+
 
     this.gridPositionInQuestion = undefined
     this.currentGame = undefined
   }
 
   dataRecieved(player: ConnectionManager, data: any) {
+    if (data.resetBothClients) {
+      this.player1?.replyDataFromEngine({ isInternalMessage: true, reset: true })
+      this.player2?.replyDataFromEngine({ isInternalMessage: true, reset: true })
+      this.player1State = new EnginePlayerGameState()
+      this.player2State = new EnginePlayerGameState()
+      this.currentGame = undefined
+    }
     if (data.changeGameTo !== undefined) {
       this.setGameTo(data.changeGameTo)
       return

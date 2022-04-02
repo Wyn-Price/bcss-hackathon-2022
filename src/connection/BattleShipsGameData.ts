@@ -28,7 +28,7 @@ export const findShipByName = (name: string) => {
   return ship
 }
 
-export const ALL_SHIPS = [SHIP_CARRIER, SHIP_BATTLESHIP, SHIP_CRUISER, SHIP_SUBMARINE, SHIP_DESTROYER]
+export const ALL_SHIPS = [SHIP_DESTROYER]//SHIP_CARRIER, SHIP_BATTLESHIP, SHIP_CRUISER, SHIP_SUBMARINE, 
 
 export class ShipPosition {
   constructor(
@@ -54,10 +54,6 @@ export class EnginePlayerGameState {
   myTiles: readonly TileState[][] = createEmptyTiles()
   myShips: Map<Ship, ShipPosition> = new Map()
   hasSetShips = false
-
-  updateFromData(data: any) {
-    return false
-  }
 }
 
 //Stored locally per client
@@ -65,7 +61,6 @@ export class PlayerGameState extends EnginePlayerGameState {
   gameState = new ListenableObject<GameState>("placing_tiles")
   isSelfTurn = new ListenableObject(false)
   otherTiles: readonly TileState[][] = createEmptyTiles()
-  otherShips: Map<Ship, ShipPosition> = new Map()
 
   prePlaceShipPositions = new ListenableObject<readonly ShipPosition[]>([])
   playingShipPosition = new ListenableObject<ShipPosition | null>(null)

@@ -3,18 +3,13 @@ import '../stylesheets/index.css';
 import firework from './Images/fireworks.png';
 
 
-
-// const container = document.getElementById('root')
-// if (!container) throw new Error("Missing root element")
-// const root = ReactDOMClient.createRoot(container)
-
-const WinScreen = () => {
-    const playerID = 2; // Temp playerID --> requests from server and then server passes in the winner
+const WinScreen = ({ playAgain }: { playAgain: () => void }) => {
     return (
-        <div className='flex flex-col items-center justify-center h-screen bg-green-400'>
-            {/* <header className='text-4xl p-2 my-2 italic'>Congratulations Player {playerID}</header>
-            <header className='text-4xl p-2 my-2 font-bold'>You Win!</header> */}
-            <img src={firework} alt="Cannot display" />
+        <div className='flex flex-col items-center justify-center h-full bg-green-400 p-10'>
+            <div className='text-4xl p-2 my-2 italic'>Congratulations Player</div>
+            <div className='text-4xl p-2 my-2 font-bold'>You Win!</div>
+            <img className='flex-shrink min-h-0' src={firework} alt="Cannot display" />
+            <button onClick={playAgain} className='bg-blue-500 rounded p-2'>Play Again</button>
         </div>
     )
 }
