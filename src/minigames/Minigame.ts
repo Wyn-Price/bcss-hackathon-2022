@@ -20,10 +20,11 @@ export class Minigame {
 }
 
 export class ReplyToEachotherMinigame extends Minigame {
+
   //Update Both Players UI
   dataRecieved(player: ConnectionManager, data: any): void {
     console.log(`Player{isMainPlayer=${player.player1}} sent: `, data)
-    this.player1.replyData({ text: `[${player.player1 ? "You" : "Them"}] ${data.input}` })
-    this.player2.replyData({ text: `[${player.player1 ? "Them" : "You"}] ${data.input}` })
+    this.player1.replyDataFromEngine({ text: `[${player.player1 ? "You" : "Them"}] ${data.input}` })
+    this.player2.replyDataFromEngine({ text: `[${player.player1 ? "Them" : "You"}] ${data.input}` })
   }
 }

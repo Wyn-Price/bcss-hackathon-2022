@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ConnectionManager } from "./connection/ConnectionManager"
+import { ConnectionManager } from "../connection/ConnectionManager"
 
 const TypeToEachOtherGame = ({ connection }: { connection: ConnectionManager }) => {
   const [lines, setLines] = useState<readonly string[]>([])
@@ -10,7 +10,7 @@ const TypeToEachOtherGame = ({ connection }: { connection: ConnectionManager }) 
   const [linesInput, setLinesInput] = useState("")
   const onClick = () => {
     setLinesInput("")
-    connection.sendData({ input: linesInput })
+    connection.sendDataToEngine({ input: linesInput })
   }
   return (
     <div>

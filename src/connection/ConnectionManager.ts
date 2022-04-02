@@ -1,11 +1,12 @@
+import { useEffect } from 'react';
 import Connection from './Connection';
 import GameEngine from './GameEngine';
 
 
 export interface ConnectionManager {
   player1: boolean,
-  sendData: (data: any) => void, //Sends data to engine
-  replyData: (data: any) => void, //Reply from data in the engine, updates the listeners
+  sendDataToEngine: (data: any) => void, //Sends data to engine
+  replyDataFromEngine: (data: any) => void, //Reply from data in the engine, updates the listeners
 
   //Engine replies
   //Takes in a function, and returns a function that unsubscribes the data
@@ -16,10 +17,10 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManager => 
   const listeners = new Set<(data: any) => void>()
   return {
     player1: true,
-    sendData(data) {
+    sendDataToEngine(data) {
       gameEngine.dataRecieved(this, data)
     },
-    replyData(data) {
+    replyDataFromEngine(data) {
       listeners.forEach(l => l(data))
     },
     subscribeToDataRecieved(func) {
@@ -38,10 +39,10 @@ export const createRemoteManager = (connection: Connection, gameEngine: GameEngi
   })
   const player: ConnectionManager = {
     player1: false,
-    sendData(data) {
+    sendDataToEngine(data) {
       throw new Error("Tried to send data from host side. Please use replyData")
     },
-    replyData(data) {
+    replyDataFromEngine(data) {
       console.trace("SEND_REPLY _DATA", data)
       connection.send(data)
     },
@@ -62,11 +63,11 @@ export const createRemoteGameListener = (connection: Connection) => {
   })
   const player: ConnectionManager = {
     player1: false,
-    sendData(data) {
+    sendDataToEngine(data) {
       console.trace("SEND_DATA", data)
       connection.send(data)
     },
-    replyData(data) {
+    replyDataFromEngine(data) {
       throw new Error("Tried to reply to data from other side")
     },
     subscribeToDataRecieved(func) {
@@ -75,4 +76,8 @@ export const createRemoteGameListener = (connection: Connection) => {
     }
   }
   return player
+}
+
+export const useDataRecieved = (conn: ConnectionManager, func: (data: any) => void) => {
+  return useEffect(() => conn.subscribeToDataRecieved(func), [conn])
 }

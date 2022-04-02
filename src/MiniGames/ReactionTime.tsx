@@ -1,51 +1,61 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
+import { Minigame } from "./Minigame";
 
-const ReactionTime = ({ getTime }: { getTime: (data: number) => void }) => {
-  // Returns a random integer from 0 to 9:
-  const [color, setColor] = useState("bg-red-600");
-  const [message, setMessage] = useState(
-    "Click when the screen turns green..."
-  );
-  const timeInterval = Math.floor(Math.random() * 10);
-  const startTime = useRef(0);
-  const measuringTime = useRef(true);
+const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
+  const [waitingForClick, setWaitingForClick] = useState(false)
+  const [hasClicked, setHasClicked] = useState(false)
 
-  // change the color of the screen after (random amount of time)
-  // and then start measuring time, useEffect => only do it on initial render (no dependencies in array)
-  useEffect(() => {
-    setTimeout(() => {
-      setColor("bg-green-600");
-      startTime.current = new Date().getTime();
-    }, timeInterval * 1000);
-  }, []);
+  useDataRecieved(connection, data => {
+    if (data.setUserToNowClick === true) {
+      setWaitingForClick(false)
+    }
+  })
+
 
   // check time after screen has been pressed
   const clickHandler: () => void = () => {
-    const end = new Date().getTime();
-
-    if (measuringTime.current) {
-      if (color === "bg-red-600") {
-        setMessage("L");
-        getTime(Infinity);
-      } else {
-        const time = end - startTime.current; // milliseconds
-        setMessage("You did it in " + time + " milliseconds!");
-        getTime(time);
-      }
-    }
-
-    measuringTime.current = false;
+    connection.sendDataToEngine({ setReactionTime: true })
   };
 
   return (
     <div
       id="reaction-screen min-h-screen"
-      className={color + " min-h-screen flex justify-center items-center"}
+      className={(waitingForClick ? "bg-gray-500" : "bg-green-500") + " min-h-screen flex justify-center items-center"}
       onClick={clickHandler}
     >
-      <h2 onClick={clickHandler}>{message}</h2>
+      <h2 onClick={clickHandler}>Click when green</h2>
     </div>
   );
 };
+
+//This is only run on the host.
+export class ReactionTimeMinigame extends Minigame {
+
+  player1ReactionTime?: number
+  player2ReactionTime?: number
+
+  constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
+    super(player1, player2)
+    setTimeout(() => {
+      player1?.replyDataFromEngine({ setUserToNowClick: true })
+      player2?.replyDataFromEngine({ setUserToNowClick: true })
+    }, 3000 + Math.random() * 5000) //3 to 8 seconds
+  }
+
+  dataRecieved(player: ConnectionManager, data: any): void {
+    if (data.setReactionTime !== undefined) {
+      //Set the players reaction time
+      if (player.player1) {
+        this.player1ReactionTime = data.setReactionTime
+      } else {
+        this.player2ReactionTime = data.setReactionTime
+      }
+
+      //If both players have pressed, then end the game.
+
+    }
+  }
+}
 
 export default ReactionTime;
