@@ -34,10 +34,7 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlay
       gameEngine.dataRecieved(this, data)
     },
     replyDataFromEngine(data) {
-      console.log(data)
-      if (!playerState.updateFromData(data)) {
-        listeners.forEach(l => l(data))
-      }
+      listeners.forEach(l => l(data))
     },
     subscribeToDataRecieved(func) {
       listeners.add(func)
@@ -73,9 +70,7 @@ export const createRemoteGameListener = (connection: Connection): ConnectionMana
   const listeners = new Set<(data: any) => void>()
   const playerState = new PlayerGameState()
   connection.onDataRecieved(data => {
-    if (!playerState.updateFromData(data)) {
-      listeners.forEach(listener => listener(data))
-    }
+    listeners.forEach(listener => listener(data))
   })
   return {
     player1: false,
