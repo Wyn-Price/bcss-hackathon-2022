@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { BattleShipsGame } from './battleship/BattleShipGame';
 import Connection from './connection/Connection';
 import { ConnectionManager, ConnectionManagerPlayer, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
-import { useListenableObject } from './ListenableObject';
-import { stat } from 'fs';
-import { minigames, MinigameScreens } from './MiniGames/MinigameData';
-import { BattleShipsGame } from './battleship/BattleShipGame';
-import { Minigame } from './MiniGames/Minigame';
-import WinScreen from './EndScreens/WinScreen';
 import LoseScreen from './EndScreens/LoseScreen';
+import WinScreen from './EndScreens/WinScreen';
+import { useListenableObject } from './ListenableObject';
+import { minigames, MinigameScreens } from './MiniGames/MinigameData';
 
 const defaultState = "none"
 
@@ -194,6 +192,7 @@ const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection, start
   return (
     <div>
       Waiting for player {name}
+      <div className='bg-purple-600 w-10 ml-2' onClick={() => navigator.clipboard.writeText(name)}>Copy Link</div>
     </div>
   )
 }
