@@ -4,6 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './stylesheets/index.css';
 
+
 const container = document.getElementById('root')
 if (!container) throw new Error("Missing root element")
 const root = ReactDOMClient.createRoot(container)
