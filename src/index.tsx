@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOMClient from 'react-dom/client';
 import App from './App';
+import BattleShipsGame from './BattleShipsGame';
+import RockPaperScissors from './MiniGames/RockPaperScissors';
 import reportWebVitals from './reportWebVitals';
 import './stylesheets/index.css';
+
 
 const container = document.getElementById('root')
 if (!container) throw new Error("Missing root element")
@@ -10,7 +13,7 @@ const root = ReactDOMClient.createRoot(container)
 
 root.render(
   <React.StrictMode>
-    <App />
+    <BattleShipsGame />
   </React.StrictMode>,
 
 );
