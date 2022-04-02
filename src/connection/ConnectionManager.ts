@@ -20,16 +20,19 @@ export type GameState = "placing_tiles" | "play_game"
 
 export type ConnectionManagerPlayer = ConnectionManager & {
   playerState: PlayerGameState
+  reset: () => void
 }
 
 
 export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlayer => {
   const listeners = new Set<(data: any) => void>()
-  const playerState = new PlayerGameState()
-  const key = Math.random()
+  let playerState = new PlayerGameState()
   return {
     player1: true,
-    playerState,
+    get playerState() {
+      return playerState
+    },
+    reset: () => playerState = new PlayerGameState(),
     sendDataToEngine(data) {
       gameEngine.dataRecieved(this, data)
     },
@@ -68,13 +71,16 @@ export const createRemoteManager = (connection: Connection, gameEngine: GameEngi
 
 export const createRemoteGameListener = (connection: Connection): ConnectionManagerPlayer => {
   const listeners = new Set<(data: any) => void>()
-  const playerState = new PlayerGameState()
+  let playerState = new PlayerGameState()
   connection.onDataRecieved(data => {
     listeners.forEach(listener => listener(data))
   })
   return {
     player1: false,
-    playerState,
+    get playerState() {
+      return playerState
+    },
+    reset: () => playerState = new PlayerGameState(),
     sendDataToEngine(data) {
       connection.send(data)
     },

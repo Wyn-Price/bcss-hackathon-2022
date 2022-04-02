@@ -28,7 +28,7 @@ export const findShipByName = (name: string) => {
   return ship
 }
 
-export const ALL_SHIPS = [SHIP_CARRIER, SHIP_BATTLESHIP, SHIP_CRUISER, SHIP_SUBMARINE, SHIP_DESTROYER]
+export const ALL_SHIPS = [SHIP_DESTROYER]//SHIP_CARRIER, SHIP_BATTLESHIP, SHIP_CRUISER, SHIP_SUBMARINE, 
 
 export class ShipPosition {
   constructor(
