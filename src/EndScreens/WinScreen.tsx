@@ -1,4 +1,3 @@
-
 import React from 'react';
 import '../stylesheets/index.css';
 import firework from './Images/fireworks.png';
