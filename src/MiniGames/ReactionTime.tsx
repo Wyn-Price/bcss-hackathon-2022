@@ -1,3 +1,4 @@
+import { throws } from "assert";
 import React, { useEffect, useRef, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
@@ -41,6 +42,9 @@ export class ReactionTimeMinigame extends Minigame {
   player1ReactionTime?: boolean
   player2ReactionTime?: boolean
 
+  player1ReactionTimeWasBeforeGreen?: boolean
+  player2ReactionTimeWasBeforeGreen?: boolean
+
   runningTimeout?: NodeJS.Timeout
 
   constructor(engine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
@@ -49,6 +53,7 @@ export class ReactionTimeMinigame extends Minigame {
   }
 
   private sendTimeout() {
+    this.player1ReactionTime = this.player2ReactionTime = this.player1ReactionTimeWasBeforeGreen = this.player2ReactionTimeWasBeforeGreen = undefined
     this.runningTimeout = setTimeout(() => {
       this.runningTimeout = undefined
       this.player1?.replyDataFromEngine({ setUserToNowClick: true })
@@ -62,8 +67,14 @@ export class ReactionTimeMinigame extends Minigame {
       //Set the players reaction time
       if (player.player1) {
         this.player1ReactionTime = true
+        if (this.runningTimeout !== null) {
+          this.player1ReactionTimeWasBeforeGreen = true
+        }
       } else {
         this.player2ReactionTime = true
+        if (this.runningTimeout !== null) {
+          this.player1ReactionTimeWasBeforeGreen = true
+        }
       }
 
       //If both players have pressed, then end the game.
@@ -78,9 +89,17 @@ export class ReactionTimeMinigame extends Minigame {
 
         } else {
           if (player.player1) {
-            this.engine.playerTwoWin()
+            if (this.player2ReactionTimeWasBeforeGreen) {
+              this.engine.playerOneWin()
+            } else {
+              this.engine.playerTwoWin()
+            }
           } else {
-            this.engine.playerOneWin()
+            if (this.player1ReactionTimeWasBeforeGreen) {
+              this.engine.playerTwoWin()
+            } else {
+              this.engine.playerOneWin()
+            }
           }
         }
       }
