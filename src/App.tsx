@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import TypeToEachOtherGame from './TypeToEachOtherGame';
+import TypeToEachOtherGame from './minigames/TypeToEachOtherGame';
 import { ConnectionManager, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
 import Connection from './connection/Connection';
