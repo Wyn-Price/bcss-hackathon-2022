@@ -26,29 +26,35 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     const [questions, setQuestions] = React.useState([])
     const [answers, setAnswers] = React.useState([])
 
+    const [winner, setWinner] = React.useState(undefined)
+
 
     useDataRecieved(connection, (data) => {
         setQuestions(data.questions)
         setAnswers(data.answers)
         updateScore1(data.p1Score)
         updateScore2(data.p2Score)
-        console.log("questions recieved: " + questions)
-        console.log("questions recieved: " + answers)
+        setWinner(data.winner)
     })
 
-
-
-    const Question = () => { // { questions }: { questions: string[] }
-        console.log("NOW THEY ARE: " + questions)
-        return (
-            <div className='flex flex-col items-center justify-center bg-white rounded-2xl h-fit w-96'>
-                <div className='flex'>
-                    <header className='text-4xl font-bold'>{questions[currentQuestion]} =</header>
-                    <header className='text-4xl text-red-700 font-bold'>?</header>
+    const Question = () => {
+        if (winner == undefined) {
+            return (
+                <div className='flex flex-col items-center justify-center bg-white rounded-2xl h-fit w-96'>
+                    <div className='flex'>
+                        <header className='text-4xl font-bold'>{questions[currentQuestion]} =</header>
+                        <header className='text-4xl text-red-700 font-bold'>?</header>
+                    </div>
+                    <Selections answer={answers[currentQuestion]}></Selections>
                 </div>
-                <Selections answer={answers[currentQuestion]}></Selections>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div className='flex items-center justify-center h-48 w-96 mb-80'>
+                    <header className='text-white text-6xl font-bold underline'>Player {winner} wins</header>
+                </div>
+            )
+        }
     }
 
     // Sends the score to the server if there is ever an update
@@ -61,17 +67,22 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
         var options: number[] = [Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)]
         options.splice(Math.floor(Math.random() * 3), 0, answer)
 
+        let gameOver = false
+        if (winner !== undefined) {
+            gameOver = true
+        }
 
         return (
-            <div className='m-3 mt-5 bg-white'>
-                {options.map((option) => <div className='flex items-center justify-center border-2 m-2 p-2 bg-white rounded-full'
-                    onClick={() => CheckAnswer(option, answer)}>
-                    <header className='text-3xl'>{option}</header>
-                </div>)}
+            <div>
+                <div className={(gameOver ? "hidden" : "") + ' m-3 mt-5 bg-white'}>
+
+                    {options.map((option) => <div className='flex items-center justify-center border-2 m-2 p-2 bg-white rounded-full'
+                        onClick={() => CheckAnswer(option, answer)}>
+                        <header className='text-3xl'>{option}</header>
+                    </div>)}
+                </div>
             </div>
         )
-
-
 
         function CheckAnswer(selected: number, answer: number) {
             if (selected == answer) {
@@ -80,12 +91,7 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
                 sendUpdatedScore()
             }
         }
-
-
-
-
     }
-
 
 
     return (
@@ -106,20 +112,17 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
             <div className='flex w-1/4 items-center justify-center'>
                 <header className='text-4xl text-white'>Player 2 Score: {p2Score}</header>
             </div>
-            {/* {questions.map((question) => <div>{question}</div>)} */}
         </div>
-
 
     )
 }
-
-
 
 export default MathGame;
 
 export class MathMinigame extends Minigame {
     p1Score?: number
     p2Score?: number
+    winner?: number
 
     questions: string[] = []
     answers: number[] = []
@@ -128,12 +131,36 @@ export class MathMinigame extends Minigame {
         super(gameEngine, player1, player2)
         this.createQuestionList()
         this.answers = this.questions.map((question) => eval(question))
+        this.p1Score = 0
+        this.p2Score = 0
+    }
+
+    // Receive the data and send it to both
+    dataRecieved(player: ConnectionManager, data: any): void {
+        if (data.dataReady !== undefined) {
+            player?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score, winner: this.winner });
+        }
+        if (data.p1Score !== undefined) {
+            if (player.player1) {
+                this.p1Score = data.p1Score + 1
+            } else {
+                this.p2Score = data.p2Score + 1
+            }
+            this.checkForWinner()
+            this.player1.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score, winner: this.winner });
+            this.player2.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score, winner: this.winner });
+
+        }
 
     }
 
-    dataRecieved(player: ConnectionManager, data: any): void {
-        if (data.dataReady !== undefined) {
-            player?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
+    // Check if someone has won
+    checkForWinner() {
+        if (this.p1Score == 5) {
+            this.winner = 1
+        }
+        if (this.p2Score == 5) {
+            this.winner = 2
         }
     }
 
