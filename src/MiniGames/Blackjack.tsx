@@ -45,8 +45,8 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
             <div className="flex flex-col justify-center items-center w-40">
                 <h1>Opponent's last card:</h1>
                 <BlackjackCard
-                    value={opponentHand === [] ? 0 : opponentHand[opponentHand.length - 1][0]}
-                    suit={opponentHand === [] ? "" : opponentHand[opponentHand.length - 1][1]}
+                    value={opponentHand.length === 0 ? 0 : opponentHand[opponentHand.length - 1][0]}
+                    suit={opponentHand.length === 0 ? "" : opponentHand[opponentHand.length - 1][1]}
                 />
             </div>
             <div className="flex flex-col gap-20 items-center m-40">
@@ -63,7 +63,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
             </div>
             <div className="flex flex-col justify-center items-center w-40">
                 <h1>Last card:</h1>
-                <BlackjackCard value={hand === [] ? 0 : hand[hand.length - 1][0]} suit={hand === [] ? "" : hand[hand.length - 1][1]} />
+                <BlackjackCard value={hand.length === 0 ? 0 : hand[hand.length - 1][0]} suit={hand.length === 0 ? "" : hand[hand.length - 1][1]} />
             </div>
         </div>
     );
@@ -80,13 +80,18 @@ export class BlackjackMinigame extends Minigame {
 
     constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
         super(gameEngine, player1, player2);
-        // cartesian product of two sets
-        const cartesian = (...a: any[]) => a.reduce((a, b) => a.flatMap((d: any) => b.map((e: any) => [d, e].flat())));
-        this.deck = cartesian([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], ["S", "H", "D", "C"]);
+
+        this.deck = this.newDeck();
         this.p1Hand = [];
         this.p2Hand = [];
 
         this.shuffle();
+    }
+
+    newDeck() {
+        // cartesian product of two sets
+        const cartesian = (...a: any[]) => a.reduce((a, b) => a.flatMap((d: any) => b.map((e: any) => [d, e].flat())));
+        return cartesian([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], ["S", "H", "D", "C"]);
     }
 
     shuffle() {
@@ -179,7 +184,29 @@ export class BlackjackMinigame extends Minigame {
             this.p2?.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: true });
         } else {
             player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
-            this.p1?.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
+            this.p1?.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: false });
+
+            // compare scores and define winner
+            const p1score = this.sum(this.p1Hand);
+            const p2score = this.sum(this.p2Hand);
+            if (p1score === p2score) {
+                // restart the game
+                this.deck = this.newDeck();
+                this.shuffle;
+
+                this.p1Hand = [];
+                this.p2Hand = [];
+
+                // player one has to start cos game ends after p2 folds lol L player 2
+                this.p1?.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
+                this.p2?.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
+            } else if (p1score > p2score) {
+                this.engine.playerOneWin();
+                this.endGame();
+            } else {
+                this.engine.playerTwoWin();
+                this.endGame();
+            }
         }
     }
 
