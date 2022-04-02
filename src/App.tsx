@@ -59,7 +59,7 @@ const App = () => {
 
   return (
     <>
-      <BattleShipsGame connection={connection} />
+      {/* <BattleShipsGame connection={connection} /> */}
     </>
   );
 }
