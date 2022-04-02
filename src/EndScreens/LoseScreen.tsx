@@ -6,7 +6,7 @@ import '../stylesheets/index.css';
 // const root = ReactDOMClient.createRoot(container)
 
 const LoseScreen = () => {
-    const playerID = 2; // Temp winnerID
+    const playerID = 1; // Temp loserID --> requests from server and then server passes in the loser
     return (
         <div className='flex flex-col items-center justify-center h-screen bg-red-700'>
             <header className='text-4xl p-2 my-2 italic'>Unlucky Player {playerID}</header>

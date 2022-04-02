@@ -1,4 +1,3 @@
-
 import React from 'react';
 import '../stylesheets/index.css';
 import firework from './Images/fireworks.png';
@@ -10,7 +9,7 @@ import firework from './Images/fireworks.png';
 // const root = ReactDOMClient.createRoot(container)
 
 const WinScreen = () => {
-    const playerID = 2; // Temp winnerID
+    const playerID = 2; // Temp playerID --> requests from server and then server passes in the winner
     return (
         <div className='flex flex-col items-center justify-center h-screen bg-green-400'>
             {/* <header className='text-4xl p-2 my-2 italic'>Congratulations Player {playerID}</header>
