@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Connection from './connection/Connection';
-import { ConnectionManager, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
+import { ConnectionManager, ConnectionManagerPlayer, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
 import { useListenableObject } from './ListenableObject';
 import { stat } from 'fs';
 import { minigames, MinigameScreens } from './MiniGames/MinigameData';
-import { BattleShipsGame } from './BattleShipGame';
+import { BattleShipsGame } from './battleship/BattleShipGame';
 
 const defaultState = "none"
 
@@ -15,7 +15,7 @@ const App = () => {
 
   const [state, setState] = useState<"none" | "host-wait" | "play">(defaultState)
   const [joinCode, setJoinCode] = useState("")
-  const [connectionManager, setConnectionManager] = useState<ConnectionManager>()
+  const [connectionManager, setConnectionManager] = useState<ConnectionManagerPlayer>()
   const gameEngineRef = useRef<GameEngine>()
 
 
@@ -94,7 +94,7 @@ const App = () => {
 //   if (context === null) throw new Error("useGameContext must be called between providers");
 //   return context
 // }
-const GameArea = ({ conn }: { conn: ConnectionManager }) => {
+const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   const [minigame, setMinigame] = useState<typeof minigames[number] | null>(null)
 
   useEffect(() => conn.subscribeToDataRecieved(data => {
@@ -118,7 +118,7 @@ const GameArea = ({ conn }: { conn: ConnectionManager }) => {
   )
 }
 
-const BattleShips = ({ conn }: { conn: ConnectionManager }) => {
+const BattleShips = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   return (
     <div className='flex flex-col w-full h-full'>
       Battleships area. Click to start minigame:
@@ -127,7 +127,7 @@ const BattleShips = ({ conn }: { conn: ConnectionManager }) => {
           {mg}
         </div>
       ))}
-      <BattleShipsGame />
+      <BattleShipsGame connection={conn} />
     </div>
   )
 }

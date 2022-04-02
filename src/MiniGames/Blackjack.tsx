@@ -128,7 +128,7 @@ export class BlackjackMinigame extends Minigame {
   }
 
   dataRecieved(player: ConnectionManager, data: any): void {
-    if (data.scoreReceived !== undefined) {
+    if (data.score !== undefined) {
       //Set the players reaction time
       if (player.player1) {
         this.p1Score = data.score;

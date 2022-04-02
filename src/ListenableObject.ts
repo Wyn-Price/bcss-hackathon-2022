@@ -36,5 +36,5 @@ export const useListenableObject = <T>(obj: ListenableObject<T>) => {
     (o: T) => {
       obj.value = o
     }
-  ]
+  ] as const
 }

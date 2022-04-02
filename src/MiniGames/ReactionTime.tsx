@@ -48,9 +48,9 @@ export class ReactionTimeMinigame extends Minigame {
     if (data.setReactionTime !== undefined) {
       //Set the players reaction time
       if (player.player1) {
-        this.player1ReactionTime = data.setReactionTime
+        this.player1ReactionTime = true
       } else {
-        this.player2ReactionTime = data.setReactionTime
+        this.player2ReactionTime = true
       }
 
       //If both players have pressed, then end the game.

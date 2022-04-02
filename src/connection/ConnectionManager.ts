@@ -1,3 +1,4 @@
+import { PlayerGameState } from './BattleShipsGameData';
 import { useEffect } from 'react';
 import Connection from './Connection';
 import GameEngine from './GameEngine';
@@ -13,15 +14,24 @@ export interface ConnectionManager {
   subscribeToDataRecieved: (func: (data: any) => void) => () => void
 }
 
-export const createHostManager = (gameEngine: GameEngine): ConnectionManager => {
+export type ConnectionManagerPlayer = ConnectionManager & {
+  playerState: PlayerGameState
+}
+
+
+export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlayer => {
   const listeners = new Set<(data: any) => void>()
+  const playerState = new PlayerGameState()
   return {
     player1: true,
+    playerState,
     sendDataToEngine(data) {
       gameEngine.dataRecieved(this, data)
     },
     replyDataFromEngine(data) {
-      listeners.forEach(l => l(data))
+      if (!playerState.updateFromData(data)) {
+        listeners.forEach(l => l(data))
+      }
     },
     subscribeToDataRecieved(func) {
       listeners.add(func)
@@ -53,13 +63,17 @@ export const createRemoteManager = (connection: Connection, gameEngine: GameEngi
 }
 
 
-export const createRemoteGameListener = (connection: Connection) => {
+export const createRemoteGameListener = (connection: Connection): ConnectionManagerPlayer => {
   const listeners = new Set<(data: any) => void>()
+  const playerState = new PlayerGameState()
   connection.onDataRecieved(data => {
-    listeners.forEach(listener => listener(data))
+    if (!playerState.updateFromData(data)) {
+      listeners.forEach(listener => listener(data))
+    }
   })
-  const player: ConnectionManager = {
+  return {
     player1: false,
+    playerState,
     sendDataToEngine(data) {
       connection.send(data)
     },
@@ -71,7 +85,6 @@ export const createRemoteGameListener = (connection: Connection) => {
       return () => { listeners.delete(func) }
     }
   }
-  return player
 }
 
 export const useDataRecieved = (conn: ConnectionManager, func: (data: any) => void) => {

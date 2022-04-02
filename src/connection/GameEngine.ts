@@ -1,11 +1,15 @@
 import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
 import { Minigame } from '../MiniGames/Minigame';
 import { ConnectionManager } from './ConnectionManager';
+import { PlayerGameState, EnginePlayerGameState, findShipByName, ShipPosition } from './BattleShipsGameData';
 
 
 export default class GameEngine {
   player1?: ConnectionManager
   player2?: ConnectionManager
+
+  player1State = new EnginePlayerGameState()
+  player2State = new EnginePlayerGameState()
 
   currentGame?: Minigame
 
@@ -31,6 +35,31 @@ export default class GameEngine {
     }
     if (this.currentGame) {
       this.currentGame.dataRecieved(player, data)
+    } else {
+      this._battleshipDataRecieved(player, data)
+    }
+  }
+
+  private _battleshipDataRecieved(player: ConnectionManager, data: any) {
+    const playerState = player.player1 ? this.player1State : this.player2State
+    if (data.shipsSet !== undefined) {
+      const setShips: {
+        ship: string;
+        grid: {
+          x: number;
+          y: number;
+        };
+        rotated: boolean;
+      }[] = data.shipsSet
+      setShips.forEach(shipData => {
+        const ship = findShipByName(shipData.ship)
+        playerState.myShips.set(ship, new ShipPosition(ship, shipData.grid, shipData.rotated))
+      })
+      playerState.hasSetShips = true
+      if (this.player1State.hasSetShips && this.player2State.hasSetShips) {
+        this.player1?.replyDataFromEngine({ beginGame: true })
+        this.player2?.replyDataFromEngine({ beginGame: true })
+      }
     }
   }
 
