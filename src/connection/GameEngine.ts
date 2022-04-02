@@ -1,5 +1,5 @@
-import { MinigameCreators, minigames } from '../minigames/MinigameData';
-import { Minigame } from './../minigames/Minigame';
+import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
+import { Minigame } from '../MiniGames/Minigame';
 import { ConnectionManager } from './ConnectionManager';
 
 

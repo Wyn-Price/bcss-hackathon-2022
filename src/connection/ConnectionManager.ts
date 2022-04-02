@@ -61,7 +61,6 @@ export const createRemoteGameListener = (connection: Connection) => {
   const player: ConnectionManager = {
     player1: false,
     sendDataToEngine(data) {
-      console.trace("SEND_DATA", data)
       connection.send(data)
     },
     replyDataFromEngine(data) {

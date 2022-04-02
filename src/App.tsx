@@ -4,7 +4,8 @@ import { ConnectionManager, createHostManager, createRemoteGameListener, createR
 import GameEngine from './connection/GameEngine';
 import { useListenableObject } from './ListenableObject';
 import { stat } from 'fs';
-import { minigames, MinigameScreens } from './minigames/MinigameData';
+import { minigames, MinigameScreens } from './MiniGames/MinigameData';
+import { BattleShipsGame } from './BattleShipGame';
 
 const defaultState = "none"
 
@@ -119,13 +120,14 @@ const GameArea = ({ conn }: { conn: ConnectionManager }) => {
 
 const BattleShips = ({ conn }: { conn: ConnectionManager }) => {
   return (
-    <div>
+    <div className='flex flex-col w-full h-full'>
       Battleships area. Click to start minigame:
       {minigames.map(mg => (
         <div key={mg} onClick={() => conn.sendDataToEngine({ changeGameTo: mg })}>
           {mg}
         </div>
       ))}
+      <BattleShipsGame />
     </div>
   )
 }
