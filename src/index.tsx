@@ -11,7 +11,7 @@ const root = ReactDOMClient.createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ReactionTime getTime={(num: number) => {}} />
+    <App />
   </React.StrictMode>
 );
 
