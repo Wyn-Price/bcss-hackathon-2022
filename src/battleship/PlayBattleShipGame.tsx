@@ -53,9 +53,11 @@ const PlacingShipsTile = (isOtherPlayersAndSelfTurn: boolean, connection: Connec
       }} >
       <div
         onClick={() => {
-          connection.sendDataToEngine({
-            gameTurnClickedGrid: { x, y }
-          })
+          if (canSelect) {
+            connection.sendDataToEngine({
+              gameTurnClickedGrid: { x, y }
+            })
+          }
         }}
         className={getColourFromTile() + " w-full h-full " + (canSelect ? "hover:bg-blue-400" : "")}
       >
