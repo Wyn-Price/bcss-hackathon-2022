@@ -2,6 +2,7 @@ import { PlayerGameState } from './BattleShipsGameData';
 import { useEffect } from 'react';
 import Connection from './Connection';
 import GameEngine from './GameEngine';
+import { list } from 'postcss';
 
 
 export interface ConnectionManager {
@@ -11,8 +12,11 @@ export interface ConnectionManager {
 
   //Engine replies
   //Takes in a function, and returns a function that unsubscribes the data
-  subscribeToDataRecieved: (func: (data: any) => void) => () => void
+  subscribeToDataRecieved: (func: (data: any) => void, debug?: boolean) => () => void
 }
+
+export type GameState = "placing_tiles" | "play_game"
+
 
 export type ConnectionManagerPlayer = ConnectionManager & {
   playerState: PlayerGameState
@@ -20,8 +24,9 @@ export type ConnectionManagerPlayer = ConnectionManager & {
 
 
 export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlayer => {
-  const listeners = new Set<(data: any) => void>()
+  const listeners = new Map<number, (data: any) => void>()
   const playerState = new PlayerGameState()
+  const key = Math.random()
   return {
     player1: true,
     playerState,
@@ -29,22 +34,27 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlay
       gameEngine.dataRecieved(this, data)
     },
     replyDataFromEngine(data) {
+      console.log(key, listeners)
       if (!playerState.updateFromData(data)) {
         listeners.forEach(l => l(data))
       }
     },
-    subscribeToDataRecieved(func) {
-      listeners.add(func)
-      return () => { listeners.delete(func) }
+    subscribeToDataRecieved(func, debug?: boolean) {
+      const key = Math.random()
+      listeners.set(key, func)
+      if (debug) console.log(key + " + debug_add " + key + " " + listeners.size)
+      return () => {
+        listeners.delete(key);
+        if (debug) console.log(key + " debug_remove " + key + " " + listeners.size)
+      }
     }
   }
 }
 
 export const createRemoteManager = (connection: Connection, gameEngine: GameEngine): ConnectionManager => {
-  const listeners = new Set<(data: any) => void>()
   connection.onDataRecieved(data => {
+    console.log(data)
     gameEngine?.dataRecieved(player, data)
-
   })
   const player: ConnectionManager = {
     player1: false,

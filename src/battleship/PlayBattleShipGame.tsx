@@ -1,11 +1,12 @@
 import { useDebugValue, useState } from "react"
 import { Ship, ShipPosition, TileState } from "../connection/BattleShipsGameData"
 import { ConnectionManagerPlayer, useDataRecieved } from "../connection/ConnectionManager"
+import { useListenableObject } from "../ListenableObject"
 import { Grid, PlacedShipsVisual, usePlayerGameState } from "./BattleShipGame"
 
-export const PlayBattleShipGame = ({ selfTurnStart }: { selfTurnStart: boolean }) => {
+export const PlayBattleShipGame = () => {
   const { playerState, connection } = usePlayerGameState()
-  const [isSelfTurn, setSelfTurn] = useState(selfTurnStart)
+  const [isSelfTurn, setSelfTurn] = useListenableObject(connection.playerState.isSelfTurn)
   useDataRecieved(connection, data => {
     if (data.isSelfTurn !== undefined) {
       setSelfTurn(data.isSelfPlaying)

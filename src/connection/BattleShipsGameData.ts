@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import ListenableObject from "../ListenableObject"
+import { GameState } from './ConnectionManager';
 
 export type TileState = "empty" | "fire_miss" | "fire_hit"
 
@@ -61,6 +62,8 @@ export class EnginePlayerGameState {
 
 //Stored locally per client
 export class PlayerGameState extends EnginePlayerGameState {
+  gameState = new ListenableObject<GameState>("placing_tiles")
+  isSelfTurn = new ListenableObject(false)
   otherTiles: readonly TileState[][] = createEmptyTiles()
   otherShips: Map<Ship, ShipPosition> = new Map()
 

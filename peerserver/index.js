@@ -22,6 +22,7 @@ app.ws('/', (ws, res) => {
     console.log(js)
     if (js.connectToName !== undefined) {
       const other = js.connectToName
+      console.log(`self=${name} pair-to=${other}`)
       if (nameToPeer[other] !== undefined) {
         return
       }

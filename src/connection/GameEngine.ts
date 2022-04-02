@@ -53,6 +53,7 @@ export default class GameEngine {
     loser?.replyDataFromEngine({ ...data, self: true })
 
     this.gridPositionInQuestion = undefined
+    this.currentGame = undefined
   }
 
   dataRecieved(player: ConnectionManager, data: any) {
@@ -69,9 +70,9 @@ export default class GameEngine {
 
   private setGameTo(mg: typeof minigames[number]) {
     const dataToSend = { isInternalMessage: true, startMinigame: mg }
-    this.currentGame = MinigameCreators[mg](this, this.player1, this.player2)
     this.player1?.replyDataFromEngine(dataToSend)
     this.player2?.replyDataFromEngine(dataToSend)
+    this.currentGame = MinigameCreators[mg](this, this.player1, this.player2)
   }
 
   private _battleshipDataRecieved(player: ConnectionManager, data: any) {

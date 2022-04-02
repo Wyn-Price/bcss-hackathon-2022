@@ -10,9 +10,9 @@ import { BattleShipsGame } from './battleship/BattleShipGame';
 const defaultState = "none"
 
 
-const App = () => {
-  const connection = useMemo(() => new Connection(), [])
+const connection = new Connection()
 
+const App = () => {
   const [state, setState] = useState<"none" | "host-wait" | "play">(defaultState)
   const [joinCode, setJoinCode] = useState("")
   const [connectionManager, setConnectionManager] = useState<ConnectionManagerPlayer>()
@@ -110,13 +110,14 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
         // }
         const tileSet = data.self ? conn.playerState.myTiles : conn.playerState.otherTiles
         tileSet[data.grid.x][data.grid.y] = data.newTile
+        conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value
         setMinigame(null)
       }
       if (data.startMinigame !== undefined) {
         setMinigame(data.startMinigame)
       }
     }
-  }), [conn])
+  }, true), [conn])
   if (minigame !== null) {
     const Screen = MinigameScreens[minigame]
     return <Screen conn={conn} />
@@ -144,9 +145,11 @@ const BattleShips = ({ conn }: { conn: ConnectionManagerPlayer }) => {
 
 const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection, startPlaying: () => void }) => {
   const [name] = useListenableObject(peer.name)
+  const hasStarted = useRef(false)
   useEffect(() => {
     const remove = peer.onDataRecieved(data => {
-      if (data.startGame === "main") {
+      if (data.startGame === "main" && !hasStarted.current) {
+        hasStarted.current = true
         startPlaying()
         remove()
       }

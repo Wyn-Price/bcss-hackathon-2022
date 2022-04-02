@@ -7,7 +7,6 @@ import { PlayBattleShipGame } from "./PlayBattleShipGame"
 
 const array10 = Array.from({ length: 10 })
 
-type GameState = "placing_tiles" | "play_game"
 
 const PlayerGameStateContext = createContext<{
   playerState: PlayerGameState
@@ -23,12 +22,11 @@ export const usePlayerGameState = () => {
 }
 
 export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerPlayer }) => {
-  const [gameState, setGameState] = useState<GameState>("placing_tiles")
-  const [isSelfTurn, setIsSelfPlaying] = useState(false)
+  const [gameState, setGameState] = useListenableObject(connection.playerState.gameState)
   useDataRecieved(connection, data => {
     if (gameState === "placing_tiles" && data.beginGame === true) {
       setGameState("play_game")
-      setIsSelfPlaying(data.isSelfTurn)
+      connection.playerState.isSelfTurn.value = data.isSelfTurn
     }
   })
   return (
@@ -38,7 +36,7 @@ export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerP
     }}>
       <div className="w-full flex flex-col items-center justify-center">
         {gameState === "placing_tiles" && <PlaceShipsArea />}
-        {gameState === "play_game" && <PlayBattleShipGame selfTurnStart={isSelfTurn} />}
+        {gameState === "play_game" && <PlayBattleShipGame />}
       </div>
     </PlayerGameStateContext.Provider>
 
