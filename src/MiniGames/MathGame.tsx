@@ -157,10 +157,10 @@ export class MathMinigame extends Minigame {
     // Check if someone has won
     checkForWinner() {
         if (this.p1Score == 5) {
-            this.winner = 1
+            this.engine.playerOneWin()
         }
         if (this.p2Score == 5) {
-            this.winner = 2
+            this.engine.playerTwoWin()
         }
     }
 
