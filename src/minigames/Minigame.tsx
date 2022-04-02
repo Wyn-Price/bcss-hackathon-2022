@@ -1,14 +1,16 @@
 import { ConnectionManager } from '../connection/ConnectionManager';
+import GameEngine from '../connection/GameEngine';
 export class Minigame {
 
+  engine: GameEngine
   player1: ConnectionManager
   player2: ConnectionManager
 
-  constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
+  constructor(engine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
     if (player1 === undefined || player2 === undefined) {
       throw new Error(player1 + ", " + player2);
-
     }
+    this.engine = engine;
     this.player1 = player1;
     this.player2 = player2;
   }

@@ -24,9 +24,11 @@ export const usePlayerGameState = () => {
 
 export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerPlayer }) => {
   const [gameState, setGameState] = useState<GameState>("placing_tiles")
+  const [isSelfTurn, setIsSelfPlaying] = useState(false)
   useDataRecieved(connection, data => {
-    if (data.beginGame === true) {
+    if (gameState === "placing_tiles" && data.beginGame === true) {
       setGameState("play_game")
+      setIsSelfPlaying(data.isSelfTurn)
     }
   })
   return (
@@ -36,7 +38,7 @@ export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerP
     }}>
       <div className="w-full flex flex-col items-center justify-center">
         {gameState === "placing_tiles" && <PlaceShipsArea />}
-        {gameState === "play_game" && <PlayBattleShipGame />}
+        {gameState === "play_game" && <PlayBattleShipGame selfTurnStart={isSelfTurn} />}
       </div>
     </PlayerGameStateContext.Provider>
 

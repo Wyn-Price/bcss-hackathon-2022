@@ -3,6 +3,7 @@ import {
   ConnectionManager,
   useDataRecieved,
 } from "../connection/ConnectionManager";
+import GameEngine from "../connection/GameEngine";
 import BlackjackCard from "./BlackjackCard";
 import { Minigame } from "./Minigame";
 
@@ -80,8 +81,8 @@ export class BlackjackMinigame extends Minigame {
   deck: [number, string][];
   cardSequence: [number, string][];
 
-  constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
-    super(player1, player2);
+  constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+    super(gameEngine, player1, player2);
     // cartesian product of two sets
     const cartesian = (...a: any[]) =>
       a.reduce((a, b) =>

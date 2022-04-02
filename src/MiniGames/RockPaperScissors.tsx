@@ -3,6 +3,7 @@ import {
     ConnectionManager,
     useDataRecieved,
 } from "../connection/ConnectionManager";
+import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
 
 const RockPaperScissors = ({
@@ -55,8 +56,8 @@ export class RPSMinigame extends Minigame {
     p1choice?: number;
     p2choice?: number;
 
-    constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
-        super(player1, player2);
+    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+        super(gameEngine, player1, player2);
         // game setup
 
         // this sends the data to each client, a client

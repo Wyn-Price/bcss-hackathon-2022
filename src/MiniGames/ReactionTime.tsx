@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
+import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
 
 export const ReactionTime = ({ connection }: { connection: ConnectionManager }) => {
@@ -36,8 +37,8 @@ export class ReactionTimeMinigame extends Minigame {
   player1ReactionTime?: boolean
   player2ReactionTime?: boolean
 
-  constructor(player1?: ConnectionManager, player2?: ConnectionManager) {
-    super(player1, player2)
+  constructor(engine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+    super(engine, player1, player2)
     setTimeout(() => {
       player1?.replyDataFromEngine({ setUserToNowClick: true })
       player2?.replyDataFromEngine({ setUserToNowClick: true })
@@ -46,6 +47,7 @@ export class ReactionTimeMinigame extends Minigame {
 
   dataRecieved(player: ConnectionManager, data: any): void {
     if (data.setReactionTime !== undefined) {
+
       //Set the players reaction time
       if (player.player1) {
         this.player1ReactionTime = true
@@ -56,8 +58,11 @@ export class ReactionTimeMinigame extends Minigame {
       //If both players have pressed, then end the game.
       //TODO: proceed the main game 
       if (this.player1ReactionTime !== undefined && this.player2ReactionTime !== undefined) {
-        this.player1?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
-        this.player2?.replyDataFromEngine({ isInternalMessage: true, endMinigame: true })
+        if (player.player1) {
+          this.engine.playerTwoWin()
+        } else {
+          this.engine.playerOneWin()
+        }
       }
     }
   }
