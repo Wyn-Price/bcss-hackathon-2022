@@ -192,7 +192,7 @@ export class BlackjackMinigame extends Minigame {
             if (p1score === p2score) {
                 // restart the game
                 this.deck = this.newDeck();
-                this.shuffle;
+                this.shuffle();
 
                 this.p1Hand = [];
                 this.p2Hand = [];
