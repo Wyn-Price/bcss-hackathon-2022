@@ -1,5 +1,6 @@
+import { ConnectionManager } from "./connection/Connection"
 
-const BattleShipsGame = () => {
+const BattleShipsGame = ({ connection }: { connection: ConnectionManager }) => {
   return (
     <div>
     </div>

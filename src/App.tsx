@@ -1,7 +1,8 @@
 import Peer from 'peerjs';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import BattleShipsGame from './BattleShipsGame';
-import { ConnectionManager } from './connection/Connection';
+import { ConnectionManager, createHostManager, createRemoteManager } from './connection/Connection';
+import GameEngine from './connection/GameEngine';
 
 
 const defaultState = "none"
@@ -15,17 +16,21 @@ const App = () => {
   const [state, setState] = useState<"none" | "host-wait" | "play">(defaultState)
   const [joinCode, setJoinCode] = useState("")
   const [connection, setConnection] = useState<ConnectionManager>()
-
-  if (true) return <BattleShipsGame />
+  const gameEngineRef = useRef<GameEngine>()
 
 
   const createRoom = () => {
+    gameEngineRef.current = new GameEngine()
+    const conn = createHostManager(gameEngineRef.current)
+    setConnection(conn)
+    gameEngineRef.current.playerOneConnect(conn)
     setState("host-wait")
   }
 
   const joinRoom = () => {
+    const dataConnection = peer.connect(joinCode)
+    setConnection(createRemoteManager(dataConnection))
     setState("play")
-    peer.connect(joinCode)
   }
 
   if (state === "none") {
@@ -42,28 +47,40 @@ const App = () => {
     )
   }
 
-  if (state === "host-wait") {
+  if (state === "host-wait" && gameEngineRef.current !== undefined) {
+    return <HostWaitForClientGame peer={peer} gameEngine={gameEngineRef.current} startPlaying={() => setState("play")} />
+  }
 
+  if (connection === undefined) {
+    return <div>Connection is undefined, but we're playing?</div>
   }
 
 
 
   return (
     <>
-      <BattleShipsGame />
+      <BattleShipsGame connection={connection} />
     </>
   );
 }
 
-const HostWaitForClientGame = ({ peer, other, setOther }: { peer: Peer, other: Peer.DataConnection | undefined, setOther: (data: Peer.DataConnection) => void }) => {
-  useEffect(() => { peer.on("connection", setOther) }, [peer])
-
-  if (other === undefined) return (
-    <div>Waiting For Connection {peer.id}</div>
-  )
+const HostWaitForClientGame = ({ peer, gameEngine, startPlaying }: { peer: Peer, gameEngine: GameEngine, startPlaying: () => void }) => {
+  const hasRecievedRef = useRef(false)
+  useEffect(() => {
+    peer.on("connection", connection => {
+      if (hasRecievedRef.current) {
+        return
+      }
+      hasRecievedRef.current = true
+      gameEngine.otherPlayerConnect(createRemoteManager(connection))
+      startPlaying()
+    })
+  }, [peer])
 
   return (
-    <div>Connected With {other.peer}</div>
+    <div>
+      Waiting for player {peer.id}
+    </div>
   )
 }
 
