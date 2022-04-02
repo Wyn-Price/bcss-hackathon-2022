@@ -11,6 +11,10 @@ export const ReactionTime = ({ connection }: { connection: ConnectionManager }) 
     if (data.setUserToNowClick === true) {
       setWaitingForClick(false)
     }
+    if (data.needsResetting === true) {
+      setWaitingForClick(true)
+      setHasClicked(false)
+    }
   })
 
 
@@ -37,11 +41,18 @@ export class ReactionTimeMinigame extends Minigame {
   player1ReactionTime?: boolean
   player2ReactionTime?: boolean
 
+  runningTimeout?: NodeJS.Timeout
+
   constructor(engine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
     super(engine, player1, player2)
-    setTimeout(() => {
-      player1?.replyDataFromEngine({ setUserToNowClick: true })
-      player2?.replyDataFromEngine({ setUserToNowClick: true })
+    this.sendTimeout()
+  }
+
+  private sendTimeout() {
+    this.runningTimeout = setTimeout(() => {
+      this.runningTimeout = undefined
+      this.player1?.replyDataFromEngine({ setUserToNowClick: true })
+      this.player2?.replyDataFromEngine({ setUserToNowClick: true })
     }, 3000 + Math.random() * 5000) //3 to 8 seconds
   }
 
@@ -56,12 +67,21 @@ export class ReactionTimeMinigame extends Minigame {
       }
 
       //If both players have pressed, then end the game.
-      //TODO: proceed the main game 
       if (this.player1ReactionTime !== undefined && this.player2ReactionTime !== undefined) {
-        if (player.player1) {
-          this.engine.playerTwoWin()
+        //Both players are dumb and clicked before it went green
+        if (this.runningTimeout !== undefined) {
+          clearTimeout(this.runningTimeout)
+          this.sendTimeout()
+
+          this.player1.replyDataFromEngine({ needsResetting: true })
+          this.player2.replyDataFromEngine({ needsResetting: true })
+
         } else {
-          this.engine.playerOneWin()
+          if (player.player1) {
+            this.engine.playerTwoWin()
+          } else {
+            this.engine.playerOneWin()
+          }
         }
       }
     }
