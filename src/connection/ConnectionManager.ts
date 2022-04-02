@@ -24,7 +24,7 @@ export type ConnectionManagerPlayer = ConnectionManager & {
 
 
 export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlayer => {
-  const listeners = new Map<number, (data: any) => void>()
+  const listeners = new Set<(data: any) => void>()
   const playerState = new PlayerGameState()
   const key = Math.random()
   return {
@@ -34,18 +34,15 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlay
       gameEngine.dataRecieved(this, data)
     },
     replyDataFromEngine(data) {
-      console.log(key, listeners)
+      console.log(data)
       if (!playerState.updateFromData(data)) {
         listeners.forEach(l => l(data))
       }
     },
-    subscribeToDataRecieved(func, debug?: boolean) {
-      const key = Math.random()
-      listeners.set(key, func)
-      if (debug) console.log(key + " + debug_add " + key + " " + listeners.size)
+    subscribeToDataRecieved(func) {
+      listeners.add(func)
       return () => {
-        listeners.delete(key);
-        if (debug) console.log(key + " debug_remove " + key + " " + listeners.size)
+        listeners.delete(func);
       }
     }
   }
@@ -53,7 +50,6 @@ export const createHostManager = (gameEngine: GameEngine): ConnectionManagerPlay
 
 export const createRemoteManager = (connection: Connection, gameEngine: GameEngine): ConnectionManager => {
   connection.onDataRecieved(data => {
-    console.log(data)
     gameEngine?.dataRecieved(player, data)
   })
   const player: ConnectionManager = {

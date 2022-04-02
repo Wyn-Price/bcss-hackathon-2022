@@ -27,7 +27,6 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     const [answers, setAnswers] = React.useState([])
 
 
-
     useDataRecieved(connection, (data) => {
         setQuestions(data.questions)
         setAnswers(data.answers)
@@ -129,11 +128,13 @@ export class MathMinigame extends Minigame {
         super(gameEngine, player1, player2)
         this.createQuestionList()
         this.answers = this.questions.map((question) => eval(question))
-        console.log("questions before sending: " + this.questions)
-        player1?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
-        player2?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
 
+    }
 
+    dataRecieved(player: ConnectionManager, data: any): void {
+        if (data.dataReady !== undefined) {
+            player?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
+        }
     }
 
     // Generate 5 questions

@@ -6,6 +6,7 @@ import { useListenableObject } from './ListenableObject';
 import { stat } from 'fs';
 import { minigames, MinigameScreens } from './MiniGames/MinigameData';
 import { BattleShipsGame } from './battleship/BattleShipGame';
+import { Minigame } from './MiniGames/Minigame';
 
 const defaultState = "none"
 
@@ -119,13 +120,22 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
     }
   }, true), [conn])
   if (minigame !== null) {
-    const Screen = MinigameScreens[minigame]
-    return <Screen conn={conn} />
+    return <MinigameScreen minigame={minigame} conn={conn} />
   }
   return (
     <>
       <BattleShips conn={conn} />
     </ >
+  )
+}
+
+const MinigameScreen = ({ minigame, conn }: { minigame: typeof minigames[number], conn: ConnectionManager }) => {
+  const Screen = MinigameScreens[minigame]
+  useEffect(() => {
+    conn.sendDataToEngine({ dataReady: true })
+  }, [])
+  return (
+    <Screen conn={conn} />
   )
 }
 
