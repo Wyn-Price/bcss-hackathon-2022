@@ -8,6 +8,8 @@
     "start": "node ."
   },
   "dependencies": {
-    "peer": "^0.6.1"
+    "express": "^4.17.3",
+    "express-ws": "^5.0.2",
+    "ws": "^8.5.0"
   }
 }

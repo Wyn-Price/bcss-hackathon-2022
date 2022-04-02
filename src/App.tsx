@@ -1,37 +1,52 @@
-import Peer from 'peerjs';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import BattleShipsGame from './BattleShipsGame';
-import { ConnectionManager, createHostManager, createRemoteManager } from './connection/Connection';
+import TypeToEachOtherGame from './TypeToEachOtherGame';
+import { ConnectionManager, createHostManager, createRemoteGameListener, createRemoteManager } from './connection/ConnectionManager';
 import GameEngine from './connection/GameEngine';
-
+import Connection from './connection/Connection';
+import { useListenableObject } from './ListenableObject';
+import { stat } from 'fs';
+import { ReplyToEachotherMinigame } from './minigames/Minigame';
 
 const defaultState = "none"
 
+
 const App = () => {
-  const peer = useMemo(() => new Peer({
-    host: 'localhost',
-    port: 9000
-  }), [])
+  const connection = useMemo(() => new Connection(), [])
 
   const [state, setState] = useState<"none" | "host-wait" | "play">(defaultState)
   const [joinCode, setJoinCode] = useState("")
-  const [connection, setConnection] = useState<ConnectionManager>()
+  const [connectionManager, setConnectionManager] = useState<ConnectionManager>()
   const gameEngineRef = useRef<GameEngine>()
 
 
-  const createRoom = () => {
+  const playerJoinedThis = () => {
     gameEngineRef.current = new GameEngine()
     const conn = createHostManager(gameEngineRef.current)
-    setConnection(conn)
+    setConnectionManager(conn)
     gameEngineRef.current.playerOneConnect(conn)
+    gameEngineRef.current.otherPlayerConnect(createRemoteManager(connection, gameEngineRef.current))
+    setState("play")
+  }
+
+  const createRoom = () => {
     setState("host-wait")
   }
 
   const joinRoom = () => {
-    const dataConnection = peer.connect(joinCode)
-    setConnection(createRemoteManager(dataConnection))
-    setState("play")
+    connection.send({
+      connectToName: joinCode
+    })
+    const remove = connection.onDataRecieved(data => {
+      if (data.startGame === "main") {
+        remove()
+        console.log("on_opened")
+        setConnectionManager(createRemoteGameListener(connection))
+        setState("play")
+      }
+    })
   }
+
+  console.log(state)
 
   if (state === "none") {
     return (
@@ -47,39 +62,41 @@ const App = () => {
     )
   }
 
-  if (state === "host-wait" && gameEngineRef.current !== undefined) {
-    return <HostWaitForClientGame peer={peer} gameEngine={gameEngineRef.current} startPlaying={() => setState("play")} />
+  if (state === "host-wait") {
+    return <HostWaitForClientGame peer={connection} startPlaying={playerJoinedThis} />
   }
 
-  if (connection === undefined) {
+  if (connectionManager === undefined) {
     return <div>Connection is undefined, but we're playing?</div>
   }
 
-
+  //For testing purposes:
+  if (gameEngineRef.current && gameEngineRef.current.currentGame == null) {
+    const ge = gameEngineRef.current
+    ge.currentGame = new ReplyToEachotherMinigame(ge.player1, ge.player2)
+  }
 
   return (
     <>
-      <BattleShipsGame connection={connection} />
+      <TypeToEachOtherGame connection={connectionManager} />
     </>
   );
 }
 
-const HostWaitForClientGame = ({ peer, gameEngine, startPlaying }: { peer: Peer, gameEngine: GameEngine, startPlaying: () => void }) => {
-  const hasRecievedRef = useRef(false)
+const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection, startPlaying: () => void }) => {
+  const [name] = useListenableObject(peer.name)
   useEffect(() => {
-    peer.on("connection", connection => {
-      if (hasRecievedRef.current) {
-        return
+    const remove = peer.onDataRecieved(data => {
+      if (data.startGame === "main") {
+        startPlaying()
+        remove()
       }
-      hasRecievedRef.current = true
-      gameEngine.otherPlayerConnect(createRemoteManager(connection))
-      startPlaying()
     })
   }, [peer])
 
   return (
     <div>
-      Waiting for player {peer.id}
+      Waiting for player {name}
     </div>
   )
 }
