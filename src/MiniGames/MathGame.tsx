@@ -1,5 +1,8 @@
 import React from 'react';
+import { ConnectionManager, useDataRecieved } from '../connection/ConnectionManager';
+import GameEngine from '../connection/GameEngine';
 import '../stylesheets/index.css';
+import { Minigame } from './Minigame';
 
 
 
@@ -11,17 +14,33 @@ import '../stylesheets/index.css';
 
 
 
-const MathGame = () => {
+// const MathGame = () => {
 
-    let questions = createQuestionList()
-    let answers = questions.map((question) => eval(question))
+export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
+
 
     const [currentQuestion, updateCurrentQuestion] = React.useState(0);
-    const [score, incrementScore] = React.useState(0);
+    const [p1Score, updateScore1] = React.useState(0);
+    const [p2Score, updateScore2] = React.useState(0);
+
+    const [questions, setQuestions] = React.useState([])
+    const [answers, setAnswers] = React.useState([])
+
+
+
+    useDataRecieved(connection, (data) => {
+        setQuestions(data.questions)
+        setAnswers(data.answers)
+        updateScore1(data.p1Score)
+        updateScore2(data.p2Score)
+        console.log("questions recieved: " + questions)
+        console.log("questions recieved: " + answers)
+    })
 
 
 
     const Question = () => { // { questions }: { questions: string[] }
+        console.log("NOW THEY ARE: " + questions)
         return (
             <div className='flex flex-col items-center justify-center bg-white rounded-2xl h-fit w-96'>
                 <div className='flex'>
@@ -31,6 +50,11 @@ const MathGame = () => {
                 <Selections answer={answers[currentQuestion]}></Selections>
             </div>
         )
+    }
+
+    // Sends the score to the server if there is ever an update
+    const sendUpdatedScore = () => {
+        connection.sendDataToEngine({ p1Score: p1Score, p2Score: p2Score });
     }
 
     const Selections = ({ answer }: { answer: number }) => {
@@ -48,16 +72,17 @@ const MathGame = () => {
             </div>
         )
 
+
+
         function CheckAnswer(selected: number, answer: number) {
             if (selected == answer) {
                 updateCurrentQuestion(currentQuestion + 1)
-                incrementScore(score + 1);
-                if (score + 1 == 5) {
-                    alert("you win")
-                    incrementScore(score + 1);
-                }
+
+                sendUpdatedScore()
             }
         }
+
+
 
 
     }
@@ -67,15 +92,20 @@ const MathGame = () => {
     return (
         <div className='h-screen flex bg-purple-600 justify-evenly'>
             <div className='flex w-1/4 items-center justify-center'>
-                <header className='text-4xl text-white'>Player 1 Score: 0</header>
+                <header className='text-4xl text-white'>Player 1 Score: {p1Score}</header>
             </div>
 
-            <div className='flex flex-col items-center justify-center w-1/2'>
-                <Question></Question>
+            <div className='flex flex-col items-center justify-between w-1/2'>
+                <div className='flex items-center h-1/6'>
+                    <header className='flex items-center justify-center text-6xl'>QUICK MATHS</header>
+                </div>
+                <div className='flex items-center h-5/6'>
+                    <Question></Question>
+                </div>
             </div>
 
             <div className='flex w-1/4 items-center justify-center'>
-                <header className='text-4xl text-white'>Player 2 Score: {score}</header>
+                <header className='text-4xl text-white'>Player 2 Score: {p2Score}</header>
             </div>
             {/* {questions.map((question) => <div>{question}</div>)} */}
         </div>
@@ -84,21 +114,40 @@ const MathGame = () => {
     )
 }
 
-// Generate 5 questions
-function createQuestionList() {
-    const operators = ["+", "-", "*"]
-    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    let questions: string[] = []
 
-    for (let i = 0; i < 5; i++) {
-        var question = numbers[Math.floor(Math.random() * 10)]
-            + operators[Math.floor(Math.random() * 3)]
-            + numbers[Math.floor(Math.random() * 10)]
-        questions.push(question)
-    }
-
-
-    return questions
-}
 
 export default MathGame;
+
+export class MathMinigame extends Minigame {
+    p1Score?: number
+    p2Score?: number
+
+    questions: string[] = []
+    answers: number[] = []
+
+    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+        super(gameEngine, player1, player2)
+        this.createQuestionList()
+        this.answers = this.questions.map((question) => eval(question))
+        console.log("questions before sending: " + this.questions)
+        player1?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
+        player2?.replyDataFromEngine({ questions: this.questions, answers: this.answers, p1Score: this.p1Score, p2Score: this.p2Score });
+
+
+    }
+
+    // Generate 5 questions
+    createQuestionList() {
+        const operators = ["+", "-", "*"]
+        const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+        for (let i = 0; i < 5; i++) {
+            var question = numbers[Math.floor(Math.random() * 10)]
+                + operators[Math.floor(Math.random() * 3)]
+                + numbers[Math.floor(Math.random() * 10)]
+            this.questions.push(question)
+        }
+
+
+    }
+}
