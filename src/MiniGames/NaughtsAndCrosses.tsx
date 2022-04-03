@@ -46,8 +46,8 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
 
 
     const registerClick = ({ pos }: { pos: number }) => {
-        checkForWin(true);
         connection.sendDataToEngine({ turnEnded: true, position: pos });
+        checkForWin(true);
     };
 
     const Square = ({ pos, clickable }: { pos: number; clickable: boolean }) => {
