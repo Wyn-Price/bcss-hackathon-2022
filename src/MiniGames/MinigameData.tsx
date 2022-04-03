@@ -18,3 +18,4 @@ export const MinigameScreens: Record<typeof minigames[number], ({ conn }: { conn
   "math-game": ({ conn }) => <MathGame connection={conn} />,
   "blackjack": ({ conn }) => <Blackjack connection={conn} />
 }
+a
