@@ -1360,7 +1360,6 @@ fix
 hire
 internal
 join
-kill
 sensitive
 tap
 win
@@ -1480,7 +1479,6 @@ shake
 shift
 shine
 steal
-suck
 surround
 anybody
 bear
@@ -1488,12 +1486,9 @@ brilliant
 dare
 dear
 delay
-drunk
-female
 hurry
 inevitable
 invite
-kiss
 neat
 pop
 punch
