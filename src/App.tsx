@@ -193,7 +193,12 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
 
 const MinigameScreen = ({ minigame, conn }: { minigame: typeof minigames[number]; conn: ConnectionManager }) => {
   const Screen = MinigameScreens[minigame];
+  const hasSentDataReady = useRef(false)
   useEffect(() => {
+    if (hasSentDataReady.current) {
+      return
+    }
+    hasSentDataReady.current = true
     conn.sendDataToEngine({ dataReady: true });
   }, [conn]);
   return <Screen conn={conn} />;
