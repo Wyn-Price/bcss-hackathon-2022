@@ -51,15 +51,18 @@ const App = () => {
 
   if (state === "none") {
     return (
-      <div className="flex w-full h-full justify-center items-center">
-        <div className="flex flex-col p-10 bg-gray-500">
-          <button onClick={createRoom} className="p-2 m-2 bg-red-500">
-            Create
+      <div className="flex flex-col relative w-full h-full justify-center items-center">
+        <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
+        <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
+        <h1 className="absolute top-44 font-bold text-red-600 text-5xl">PARTY</h1>
+        <div className="flex flex-col p-10 rounded-md bg-gray-300">
+          <button onClick={createRoom} className="font-bold p-2 m-2 rounded-md bg-red-500">
+            Create Game
           </button>
-          <div className="flex p-2 m-2 bg-red-500">
-            <input value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} placeholder="code" />
-            <button onClick={joinRoom} className="ml-2">
-              Join
+          <div className="flex p-2 m-2 rounded-md bg-red-500">
+            <input className="pl-2 rounded" value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} placeholder="Code" />
+            <button onClick={joinRoom} className="font-bold ml-2">
+              Join Game
             </button>
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
