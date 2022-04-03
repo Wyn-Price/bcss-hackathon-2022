@@ -2,13 +2,21 @@ import './SimonSays.css'
 import ColorCard from './components/ColorCard';
 import { useState, useEffect } from "react"
 import timeout from "./utils/util";
+import GameEngine from "../connection/GameEngine";
+import e from 'express';
+import { Minigame } from './Minigame';
+import { ConnectionManager, useDataRecieved } from '../connection/ConnectionManager';
 
-function SimonSays() {
+export const SimonSays = ({ connection }: { connection: ConnectionManager }) => {
 
     //Setting the initial state of the button to be false. Later on, when we define the button, if it's clicked, we set it to true
     const [isOn, setIsOn] = useState(false); /* If we use 'useState' constantly, it becomes very difficult to manage each state. Therefore, we create variable called 'initialPlay' */
 
     const listOfColors = ["green", "red", "yellow", "blue"];
+
+    useDataRecieved(connection, data => {
+
+    })
     
     /* initialPlay initialises all the states we need. It holds all the states we need when we're playing in real time */
     const initialPlay = {
@@ -24,6 +32,7 @@ function SimonSays() {
 
     /* This initiates the game (sets the state of the game to true) */
     function startHandle(){
+        connection.sendDataToEngine({ setSimonSays: true })
         setIsOn(true);
     }
 
@@ -93,8 +102,9 @@ function SimonSays() {
                 }
                 setPlay(play => ({...play, userColors:copyUserColors}))
             } else{
-                await timeout(300);
-                setPlay({...initialPlay, score:play.colors.length})
+                connection.sendDataToEngine({gameOver: true})
+                // await timeout(300);
+                // setPlay({...initialPlay, score:play.colors.length})
             }
 
             await timeout(300);
@@ -138,4 +148,25 @@ function SimonSays() {
     );
 }
 
-export default SimonSays
+export class SimonSaysMinigame extends Minigame {
+    constructor(engine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+        super(engine, player1, player2)
+    }
+
+    dataRecieved(player: ConnectionManager, data: any): void {
+        if(data.gameOver === true) {
+            if(player.player1) {
+                this.engine.playerTwoWin()
+            } else {
+                this.engine.playerOneWin()
+            }
+        }
+        if(data.setSimonSays !== false) {
+            if(player.player1){
+                
+            }
+        }
+    }
+
+    
+}
