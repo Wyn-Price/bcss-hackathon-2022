@@ -17,9 +17,11 @@ app.ws('/', (ws, res) => {
 
   unfound[name] = ws
   ws.on('message', msg => {
-
     const js = JSON.parse(msg)
     console.log(js)
+    if (js._heartbeat !== undefined) {
+      return
+    }
     if (js.connectToName !== undefined) {
       const other = js.connectToName
       console.log(`self=${name} pair-to=${other}`)
@@ -74,3 +76,10 @@ app.ws('/', (ws, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+setInterval(() => {
+  const clients = [
+    ...Object.keys(unfound).map(key => unfound[key]),
+    ...Object.keys(nameToPeer).map(key => nameToPeer[key]),
+  ].forEach(cl => cl.send(JSON.stringify({ _heartbeat: Date.now() })))
+}, 1000);
