@@ -18,17 +18,20 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     const [questions, setQuestions] = React.useState([]);
     const [answers, setAnswers] = React.useState<readonly number[]>([]);
 
-    const [winner, setWinner] = React.useState(undefined);
+    const [winner] = React.useState(undefined);
 
     const empty: number[] = []
-    const [answerSet, setAnswerSet] = React.useState(empty)
 
     useDataRecieved(connection, useCallback((data) => {
-        setQuestions(data.questions);
-        setAnswers(data.answers);
-        updateScore1(data.p1Score);
-        updateScore2(data.p2Score);
-        setWinner(data.winner);
+        if (data.setQuestionsAndAnswers === true) {
+            setQuestions(data.questions);
+            setAnswers(data.answers);
+        }
+        if (data.updatePlayerScores === true) {
+            updateScore1(data.p1Score);
+            updateScore2(data.p2Score);
+        }
+
     }, []));
 
     const options = useMemo(() => {
@@ -138,13 +141,12 @@ export class MathMinigame extends Minigame {
 
     // Receive the data and send it to both
     dataRecieved(player: ConnectionManager, data: any): void {
+        console.log(data)
         if (data.dataReady !== undefined) {
             player?.replyDataFromEngine({
+                setQuestionsAndAnswers: true,
                 questions: this.questions,
                 answers: this.answers,
-                p1Score: this.p1Score,
-                p2Score: this.p2Score,
-                winner: this.winner,
             });
         }
         if (data.p1Score !== undefined) {
@@ -155,18 +157,14 @@ export class MathMinigame extends Minigame {
             }
             this.checkForWinner();
             this.player1.replyDataFromEngine({
-                questions: this.questions,
-                answers: this.answers,
+                updatePlayerScores: true,
                 p1Score: this.p1Score,
                 p2Score: this.p2Score,
-                winner: this.winner,
             });
-            this.player2.replyDataFromEngine({
-                questions: this.questions,
-                answers: this.answers,
+            this.player1.replyDataFromEngine({
+                updatePlayerScores: true,
                 p1Score: this.p1Score,
                 p2Score: this.p2Score,
-                winner: this.winner,
             });
         }
     }
