@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { isBuffer } from "util";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
@@ -117,6 +118,14 @@ export class NaughtsAndCrossesMinigame extends Minigame {
             }
             return true
         }
+
+        const isDraw = this.board.every(b => b !== "")
+        if (isDraw) {
+            this.board = ["", "", "", "", "", "", "", "", ""];
+            this.p1First = !this.p1First;
+            this.player1.replyDataFromEngine({ readyToChoose: this.p1First, board: this.board });
+            this.player2.replyDataFromEngine({ readyToChoose: !this.p1First, board: this.board });
+        }
         return false
     }
 
@@ -146,14 +155,6 @@ export class NaughtsAndCrossesMinigame extends Minigame {
             } else {
                 this.player2TurnEnded(data.position);
             }
-        }
-
-        // restart
-        if (data.draw !== undefined) {
-            this.board = ["", "", "", "", "", "", "", "", ""];
-            this.p1First = !this.p1First;
-            this.player1.replyDataFromEngine({ readyToChoose: this.p1First, board: this.board });
-            this.player2.replyDataFromEngine({ readyToChoose: !this.p1First, board: this.board });
         }
     }
 }
