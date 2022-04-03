@@ -10,7 +10,7 @@ export const PlaceShipsArea = () => {
         <PlacedShips />
       </Grid>
       <UnplacedShips />
-      <DebugPlaceButton />
+      {/* <DebugPlaceButton /> */}
     </div>
   )
 }
@@ -30,7 +30,7 @@ const PlacingShip = () => {
   )
   return (
     <>
-      {selectedShip !== null && <PlacedShipsVisual
+      {selectedShip !== null && !selectedShip.gridIndex.hideShip && <PlacedShipsVisual
         shipPos={selectedShip}
         onClick={e => {
           e.preventDefault()
@@ -84,18 +84,22 @@ const UnplacedShips = () => {
   const [selectedShip, setSelectedShip] = useListenableObject(playerData.playingShipPosition)
   const allShips = [...ALL_SHIPS].filter(ship => !placedShips.some(ps => ps.ship === ship))
   return (
-    <div className="flex flex-row ">
+    <div className="flex flex-row mt-5">
       {allShips.map((ship, index) => (
         <div key={index}
-          className={"h-10 p-1 m-1 " + (selectedShip?.ship === ship ? "bg-blue-400" : "bg-green-500 hover:bg-green-300")}
+          className={"relative flex w-full flex-row justify-center items-center h-10 p-1 m-1 rounded-md " + (selectedShip?.ship === ship ? "bg-blue-400" : "bg-green-500 hover:bg-green-300")}
           style={{
             width: `${3 * ship.size}rem`
           }}
           onClick={() => {
-            setSelectedShip(new ShipPosition(ship, { x: -1, y: -1 }, false))
+            setSelectedShip(new ShipPosition(ship, { x: -1, y: -1, hideShip: true }, false))
           }}
         >
-          {ship.name}
+          <span className="z-10 font-bold text-white">{ship.name}</span>
+          <div className="absolute left-0 top-0 w-full h-full">
+            <img className="h-full w-full scale-90" src={ship.imgSrc} alt="Ship" />
+          </div>
+
         </div>
       ))}
     </div>

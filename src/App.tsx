@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
 import { BattleShipsGame } from "./battleship/BattleShipGame";
 import Connection from "./connection/Connection";
 import { ConnectionManager, ConnectionManagerPlayer, createHostManager, createRemoteGameListener, createRemoteManager } from "./connection/ConnectionManager";
@@ -183,13 +183,13 @@ const MinigameScreen = ({ minigame, conn }: { minigame: typeof minigames[number]
 
 const BattleShips = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   return (
-    <div className="flex flex-col w-full h-full">
-      Battleships area. Click to start minigame:
+    <div className="flex flex-col w-full h-full bg-purple-500 pt-[100px]">
+      {/* Battleships area. Click to start minigame:
       {minigames.map((mg) => (
         <div key={mg} onClick={() => conn.sendDataToEngine({ changeGameTo: mg })}>
           {mg}
         </div>
-      ))}
+      ))} */}
       <BattleShipsGame connection={conn} />
     </div>
   );
@@ -208,15 +208,36 @@ const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection; start
     });
   }, [peer, startPlaying]);
 
+  const [hasCopied, setHasCopied] = useState(false)
+
   return (
-    <div>
-      <div>Waiting for player {name}</div>
-      <div>{name}</div>
-      <button className="bg-purple-600 w-10 ml-2" onClick={() => navigator.clipboard.writeText(name)}>
-        Copy Link
-      </button>
+    <div className="h-full w-full flex items-center justify-center bg-purple-200">
+      <div className="w-fit bg-blue-500 rounded-md p-5">
+        <h2 className="text-3xl">Waiting for player to connect</h2>
+        <div className="flex flex-row items-center mt-3">
+          <span>Game Join Code:</span>
+          <span className="ml-2 font-bold">{name}</span>
+          <button className="w-8 h-8 ml-1 p-1" onClick={() => {
+            navigator.clipboard.writeText(name)
+            setHasCopied(true)
+          }}>
+            <CopyLinkIcon />
+          </button>
+        </div>
+        <div className="h-5 text-sm text-blue-900">{hasCopied && "Copied"}</div>
+      </div>
     </div>
   );
+
 };
+
+
+const CopyLinkIcon = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor" {...props}>
+      <path d="M22 6v16h-16v-16h16zm2-2h-20v20h20v-20zm-24 17v-21h21v2h-19v19h-2z" />
+    </svg>
+  )
+}
 
 export default App;

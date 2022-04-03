@@ -39,7 +39,7 @@ export const ALL_SHIPS = [SHIP_CARRIER, SHIP_BATTLESHIP, SHIP_CRUISER, SHIP_SUBM
 export class ShipPosition {
   constructor(
     readonly ship: Ship,
-    readonly gridIndex: { x: number, y: number },
+    readonly gridIndex: { x: number, y: number, hideShip?: boolean },
     readonly rotated: boolean
   ) { }
 
