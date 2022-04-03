@@ -63,7 +63,7 @@ const App = () => {
   if (state === "none") {
     return (
       <div className="flex flex-col absolute w-full h-full justify-center bg-blue-300 items-center overflow-hidden">
-        <div className="pointer-events-none animate-spin duration-75 absolute h-40 w-40 top-0 right-0 p-2">
+        <div className="pointer-events-none animate-spin-slow duration-75 absolute h-40 w-40 top-0 right-0 p-2">
           <img className='object-contain' src={sun} alt="cannot find" />
         </div>
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
@@ -81,7 +81,7 @@ const App = () => {
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
         </div>
-        <div ref={wavesRef} className="pointer-events-none absolute w-screen transition-all duration-1000">
+        <div ref={wavesRef} className="pointer-events-none absolute w-screen animate-wiggle transition-all duration-1000">
           <img className='object-fill w-full' src={waves} alt="cannot find" />
         </div>
 
