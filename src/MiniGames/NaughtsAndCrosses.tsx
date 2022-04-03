@@ -55,13 +55,13 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     const Square = ({ pos, clickable }: { pos: number; clickable: boolean }) => {
         return (
             <div className="bg-white flex items-center justify-center rounded-full" onClick={clickable ? () => registerClick({ pos }) : () => { }}>
-                <header className="text-5xl text-purple-600">{board[pos]}</header>
+                <header className="text-5xl text-secondary">{board[pos]}</header>
             </div>
         );
     };
 
     return (
-        <div id="container" className="flex flex-col relative h-full overflow-hidden bg-purple-600 mb-28">
+        <div id="container" className="flex flex-col relative h-full overflow-hidden bg-main mb-28">
             <h1 className="absolute top-12 mx-auto w-full text-center text-6xl font-bold">NAUGHTS & CROSSES</h1>
             <div id="board" className="flex flex-col h-screen items-center justify-center">
                 <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-4 rounded-2xl">
@@ -69,9 +69,9 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
                         <Square pos={number} clickable={awaitingTurn}></Square>
                     ))}
                 </div>
-                <h1>{awaitingTurn ? "Your move!" : "Waiting for opponent..."}</h1>
+                <h1 className="text-2xl font-bold">{awaitingTurn ? "Your move!" : "Waiting for opponent..."}</h1>
             </div>
-            
+
         </div>
     );
 };
@@ -99,13 +99,13 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     player1TurnEnded(pos: number) {
         this.board[pos] = this.p1token;
         this.player1?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: true,  hasJustFinishedSelfMove: false, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
     }
 
     player2TurnEnded(pos: number) {
         this.board[pos] = this.p2token;
-        this.player1?.replyDataFromEngine({ readyToChoose: true,  hasJustFinishedSelfMove: false, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: false,  hasJustFinishedSelfMove: true, board: this.board });
+        this.player1?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {

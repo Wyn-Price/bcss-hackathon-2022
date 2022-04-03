@@ -24,9 +24,9 @@ const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) =>
 
     if (choice) {
         return (
-            <div className="flex justify-evenly items-center min-h-screen">
+            <div className="relative flex justify-evenly items-center min-h-screen bg-main">
                 <div className="flex flex-col">
-                    <img className="w-100 h-100 object-contain" src={Rock} />
+                    <img className="w-100 h-100 object-contain " src={Rock} />
                     <button id="rock" className={buttonStyle} onClick={choiceMade}>
                         Rock
                     </button>
@@ -47,12 +47,19 @@ const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) =>
                     </button>
                 </div>
 
-
-
             </div>
         );
     } else {
-        return <h1>Awaiting other player...</h1>;
+        return (
+            <div className="flex h-full justify-center items-center bg-main">
+                <div className="flex flex-row text-4xl font-bold text-secondary">
+                    <span>Awaiting other player</span>
+                    <div className="animate-bounce">.</div>
+                    <div className="animate-bounce">.</div>
+                    <div className="animate-bounce">.</div>
+                </div>
+            </div>
+        )
     }
 };
 

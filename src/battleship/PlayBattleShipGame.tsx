@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { SVGProps, useCallback } from "react"
 import { Ship, ShipPosition, TileState } from "../connection/BattleShipsGameData"
 import { ConnectionManagerPlayer, useDataRecieved } from "../connection/ConnectionManager"
 import { useListenableObject } from "../ListenableObject"
@@ -13,15 +13,31 @@ export const PlayBattleShipGame = () => {
     }
   }, [setSelfTurn]))
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-10">
+    <div className="h-full flex flex-col items-center gap-10">
+      <div className="w-[850px] flex flex-row items-center justify-around gap-[190px] mb-10 -mt-20">
+        <h2 className="text-2xl font-bold">Your Board</h2>
+        <div className="flex flex-col justify-center items-center">
+          <div className={"w-16 h-16 overflow-visible pt-3"}>
+            <ArrowIcon className={isSelfTurn ? "rotate-180" : ""} />
+          </div>
+          <div className="pt-3">{isSelfTurn ? "Your Turn" : "Their Turn"}</div>
+        </div>
+
+        <h2 className="text-2xl font-bold">Their Board</h2>
+      </div>
       <div className="w-full flex flex-row items-center justify-center gap-[190px]">
         <GridWithShips ships={playerState.myShips} overlayTiles={playerState.myTiles} Tile={PlacingShipsTile(false, connection, playerState.myTiles)} />
         <GridWithShips overlayTiles={playerState.otherTiles} Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
       </div>
-      <div>{isSelfTurn ? "Your Turn" : "Their Turn"}</div>
-
     </div>
+  )
+}
 
+const ArrowIcon = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor" {...props}>
+      <path xmlns="http://www.w3.org/2000/svg" d="M13 18v-4h-7v-4h7v-4l6 6-6 6zm-1-16c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z" />
+    </svg>
   )
 }
 
