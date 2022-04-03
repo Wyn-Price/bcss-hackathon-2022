@@ -34,6 +34,10 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
                 // reports it to server, doesn't when board has been received
                 connection.sendDataToEngine({ won: true });
             }
+        } else {
+            if (board.every((val: string) => val !== "")) {
+                connection.sendDataToEngine({ draw: true });
+            }
         }
     }, [board, connection]);
 
@@ -135,6 +139,14 @@ export class NaughtsAndCrossesMinigame extends Minigame {
             } else {
                 this.player2TurnEnded(data.position);
             }
+        }
+
+        // restart
+        if (data.draw !== undefined) {
+            this.board = ["", "", "", "", "", "", "", "", ""];
+            this.p1First = !this.p1First;
+            this.player1.replyDataFromEngine({ readyToChoose: this.p1First, board: this.board });
+            this.player2.replyDataFromEngine({ readyToChoose: !this.p1First, board: this.board });
         }
     }
 }
