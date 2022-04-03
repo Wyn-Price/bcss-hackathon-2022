@@ -75,7 +75,7 @@ const App = () => {
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
         </div>
-        <div ref={wavesRef} className="absolute w-screen transition-all duration-1000">
+        <div ref={wavesRef} className="pointer-events-none absolute w-screen transition-all duration-1000">
           <img className='object-fill w-full' src={waves} alt="cannot find" />
         </div>
 
