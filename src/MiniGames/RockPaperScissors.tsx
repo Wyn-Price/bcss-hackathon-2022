@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import { Minigame } from "./Minigame";
+import Rock from "./images/rock.png";
+import Scissors from "./images/scissors.png";
+import Paper from "./images/paper.png";
 
 const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) => {
     const [choice, setChoice] = useState(false);
@@ -22,19 +25,30 @@ const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) =>
     if (choice) {
         return (
             <div className="flex justify-evenly items-center min-h-screen">
-                <button id="rock" className={buttonStyle} onClick={choiceMade}>
-                    Rock
-                </button>
-                <button id="paper" className={buttonStyle} onClick={choiceMade}>
-                    Paper
-                </button>
-                <button
-                    id="scissors"
-                    className={buttonStyle}
-                    onClick={choiceMade}
-                >
-                    Scissors
-                </button>
+                <div className="flex flex-col">
+                    <img className="w-100 h-100 object-contain" src={Rock}/>
+                    <button id="rock" className={buttonStyle} onClick={choiceMade}>
+                        Rock
+                    </button>
+                </div>
+                <div className="flex flex-col">
+                    <img className="w-100 h-100 object-contain" src={Paper}/>
+                    <button id="paper" className={buttonStyle} onClick={choiceMade}>
+                        Paper
+                    </button>
+                </div>
+                <div className="flex flex-col">
+                    <img className="w-100 h-100 object-contain" src={Scissors}/>
+                    <button
+                        id="scissors"
+                        className={buttonStyle}
+                        onClick={choiceMade}>
+                        Scissors
+                    </button>
+                </div>
+                
+                
+                
             </div>
         );
     } else {
