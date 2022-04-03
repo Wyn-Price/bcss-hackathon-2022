@@ -30,7 +30,7 @@ module.exports = {
           "0%": { transform: 'translateX(1000px)' },
           "100%": { transform: 'translateX(0)' }
         },
-        "intro-left": {
+        "intro-left-long": {
           "0%": { transform: 'translateX(-1000px)' },
           "100%": { transform: 'translateX(0)' }
         }
