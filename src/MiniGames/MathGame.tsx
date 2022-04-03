@@ -94,10 +94,10 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     };
 
     return (
-        <div className="h-screen flex bg-purple-500 justify-evenly">
+        <div className="h-screen flex bg-main justify-evenly">
             <div className="flex flex-col w-1/4 items-center justify-center">
-                <h1 className="text-4xl font-bold text-white">Player 1</h1>
-                <h2 className="text-4xl text-white">{p1Score} / 5</h2>
+                <h1 className="text-4xl font-bold text-secondary">Player 1</h1>
+                <h2 className="text-4xl text-secondary">{p1Score} / 5</h2>
             </div>
 
             <div className="flex flex-col items-center justify-between w-1/2">
@@ -110,8 +110,8 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
             </div>
 
             <div className="flex flex-col w-1/4 items-center justify-center">
-                <h1 className="text-4xl font-bold text-white">Player 2</h1>
-                <h2 className="text-4xl text-white">{p2Score} / 5</h2>
+                <h1 className="text-4xl font-bold text-secondary">Player 2</h1>
+                <h2 className="text-4xl text-secondary">{p2Score} / 5</h2>
             </div>
         </div>
     );

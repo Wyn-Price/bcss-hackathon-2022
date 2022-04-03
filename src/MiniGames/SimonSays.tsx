@@ -109,8 +109,9 @@ export const SimonSays = ({ connection }: { connection: ConnectionManager }) => 
     }
 
     return (
-        <div className='SimonSays'>
-            <header className="SimonSays-header">
+        <div className='SimonSays h-full flex flex-col bg-main'>
+            <div className='text-6xl font-bold pt-20'>SIMON SAYS</div>
+            <header className="SimonSays-header flex-grow">
                 <div className='cardWrapper'> {/* cardWrapper holds all the cards and the button*/}
                     {/* The list of colours are just the colours of the squares */}
                     {

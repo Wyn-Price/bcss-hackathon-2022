@@ -12,7 +12,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
     const [myTurn, setMyTurn] = useState(false);
 
     const active = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
-    const inactive = "bg-grey-500 hover:bg-grey-700 text-white font-bold py-2 px-4 rounded";
+    const inactive = "bg-gray-200 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded";
 
     const tailwindPositions = ["top-0", "top-8", "top-16", "top-24", "top-32"]
 
@@ -43,7 +43,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
     const ignore: () => void = () => { };
 
     return (
-        <div className="flex flex-row justify-center items-center min-h-screen">
+        <div className="bg-main flex flex-row justify-center items-center min-h-screen">
             <div className="flex flex-col justify-center items-center w-40">
                 <h1>{opponentHand.length === 0 ? "" : "Opponent's last card:"}</h1>
                 <BlackjackCard
@@ -52,9 +52,10 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
                     marginDrop={"max-h-300"}
                 />
             </div>
-            <div className="flex flex-col gap-20 items-center m-40">
-                <h1>Current Score: {score}</h1>
-                <h2>{myTurn ? "It's your turn!" : "Waiting for opponent..."}</h2>
+            <div className="flex flex-col gap-20 items-center m-40 mt-20">
+                <h1 className="text-6xl font-bold">♠<span className="text-secondary">♥</span> BLACKJACK ♣<span className="text-secondary">♦</span></h1>
+                <h1 className="text-2xl font-bold">Current Score: {score}</h1>
+                <h2 className="font-bold">{myTurn ? "It's your turn!" : "Waiting for opponent..."}</h2>
                 <div className="flex flex-row gap-20">
                     <button className={myTurn ? active : inactive} onClick={myTurn ? hit : ignore}>
                         Hit
@@ -69,7 +70,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
                 <div className="w-40 h-96 relative">
 
                     {hand?.length === 0 ? "" :
-                        hand?.map((card, index) => (<BlackjackCard value={card[0]} suit={card[1]} marginDrop={("h-screen absolute " + tailwindPositions[index])} ></BlackjackCard>))}
+                        hand?.map((card, index) => (<BlackjackCard value={card[0]} suit={card[1]} marginDrop={("absolute " + tailwindPositions[index])} ></BlackjackCard>))}
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ export const PlaceShipsArea = () => {
         <PlacedShips />
       </Grid>
       <UnplacedShips />
-      {/* <DebugPlaceButton /> */}
+      <DebugPlaceButton />
     </div>
   )
 }

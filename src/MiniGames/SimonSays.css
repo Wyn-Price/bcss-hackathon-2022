@@ -3,7 +3,6 @@
 }
 
 .SimonSays-header {
-    background-color: #282c34;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -22,32 +21,32 @@
     width: 200px;
 }
 
-.cardWrapper{
+.cardWrapper {
     display: flex;
     width: 400px;
     flex-wrap: wrap;
 }
 
-.startButton{
+.startButton {
     border: 2px solid white;
-    background-color: rgb(33,33,36);
-    position:absolute;
-    width:100px;
-    color:white;
+    background-color: rgb(33, 33, 36);
+    position: absolute;
+    width: 100px;
+    color: white;
 }
 
 .score {
     position: absolute;
-    width:100px;
-    height:100px;
+    width: 100px;
+    height: 100px;
     background-color: black;
     border-radius: 50%;
-    line-height:100px;
+    line-height: 100px;
     font-size: 5;
 }
 
 .flash.flash {
-    border:3px solid white;
+    border: 3px solid white;
     border-radius: 5px;
     box-sizing: border-box;
 
@@ -59,7 +58,7 @@
     height: 400px;
     background-color: black;
     border-radius: 50%;
-    line-height:100px;
+    line-height: 100px;
     font-size: 5;
     display: flex;
     justify-content: center;
@@ -69,33 +68,33 @@
 
 .red {
     background-color: red;
-    
+
 }
 
-.red.flash{
-    background-color: rgb(255,125,125);
+.red.flash {
+    background-color: rgb(255, 125, 125);
 }
 
 .green {
     background-color: green;
 }
 
-.green.flash{
-    background-color: rgb(125,255,125);
+.green.flash {
+    background-color: rgb(125, 255, 125);
 }
 
 .blue {
     background-color: blue;
 }
 
-.blue.flash{
-    background-color: rgb(125,125,225);
+.blue.flash {
+    background-color: rgb(125, 125, 225);
 }
 
 .yellow {
     background-color: yellow;
 }
 
-.yellow.flash{
-    background-color: rgb(255,255,125);
+.yellow.flash {
+    background-color: rgb(255, 255, 125);
 }

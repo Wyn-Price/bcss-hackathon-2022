@@ -1,4 +1,5 @@
-import { SVGProps, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import sun from './assets/sun.png';
 import waves from './assets/waves.png';
 import { BattleShipsGame } from "./battleship/BattleShipGame";
 import Connection from "./connection/Connection";
@@ -57,17 +58,22 @@ const App = () => {
     }
   }, [])
 
+
+
   if (state === "none") {
     return (
       <div className="flex flex-col absolute w-full h-full justify-center bg-blue-300 items-center overflow-hidden">
+        <div className="pointer-events-none animate-spin duration-75 absolute h-40 w-40 top-0 right-0 p-2">
+          <img className='object-contain' src={sun} alt="cannot find" />
+        </div>
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
         <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
-        <h1 className="absolute top-44 font-bold text-red-600 text-5xl">PARTY</h1>
+        <h1 className="absolute top-44 font-bold text-secondary text-5xl">PARTY</h1>
         <div className="flex flex-col p-10 rounded-md ">
-          <button onClick={createRoom} className="font-bold p-2 m-2 rounded-md bg-red-500">
+          <button onClick={createRoom} className="font-bold p-2 m-2 rounded-md bg-secondary">
             Create Game
           </button>
-          <div className="flex p-2 m-2 rounded-md bg-red-500">
+          <div className="flex p-2 m-2 rounded-md bg-secondary">
             <input className="pl-2 rounded" value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} placeholder="Code" />
             <button onClick={joinRoom} className="font-bold ml-2">
               Join Game
@@ -195,7 +201,7 @@ const MinigameScreen = ({ minigame, conn }: { minigame: typeof minigames[number]
 
 const BattleShips = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   return (
-    <div className="flex flex-col w-full h-full bg-purple-500 pt-[100px]">
+    <div className="flex flex-col w-full h-full bg-main pt-[100px]">
       {/* Battleships area. Click to start minigame:
       {minigames.map((mg) => (
         <div key={mg} onClick={() => conn.sendDataToEngine({ changeGameTo: mg })}>
@@ -223,9 +229,9 @@ const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection; start
   const [hasCopied, setHasCopied] = useState(false)
 
   return (
-    <div className="h-full w-full flex items-center justify-center bg-purple-200">
-      <div className="w-fit bg-blue-500 rounded-md p-5">
-        <h2 className="text-3xl">Waiting for player to connect</h2>
+    <div className="h-full w-full flex items-center justify-center bg-main">
+      <div className="w-fit bg-secondary rounded-lg p-5">
+        <h2 className="text-3xl mb-10">Waiting for player to connect</h2>
         <div className="flex flex-row items-center mt-3">
           <span>Game Join Code:</span>
           <span className="ml-2 font-bold">{name}</span>
