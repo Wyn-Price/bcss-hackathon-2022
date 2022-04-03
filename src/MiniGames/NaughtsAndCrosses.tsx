@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { isBuffer } from "util";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
@@ -14,47 +15,16 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     const [board, setBoard] = React.useState<readonly string[]>(["", "", "", "", "", "", "", "", ""]);
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-
-
-    const checkForWin = useCallback((report: boolean) => {
-        let win1 = board[0] === board[1] && board[0] === board[2] && board[0] !== "";
-        let win2 = board[3] === board[4] && board[3] === board[5] && board[3] !== "";
-        let win3 = board[6] === board[7] && board[6] === board[8] && board[6] !== "";
-
-        let win4 = board[0] === board[3] && board[0] === board[6] && board[0] !== "";
-        let win5 = board[1] === board[4] && board[1] === board[7] && board[1] !== "";
-        let win6 = board[2] === board[5] && board[2] === board[8] && board[2] !== "";
-
-        let win7 = board[0] === board[4] && board[0] === board[8] && board[0] !== "";
-        let win8 = board[2] === board[4] && board[2] === board[6] && board[2] !== "";
-
-        let typesOfWins = [win1, win2, win3, win4, win5, win6, win7, win8];
-
-        if (typesOfWins.some((element) => element)) {
-            // update UI to show win here !!
-            if (report) {
-                // reports it to server, doesn't when board has been received
-                connection.sendDataToEngine({ won: true });
-            }
-        } else {
-            if (board.every((val: string) => val !== "")) {
-                connection.sendDataToEngine({ draw: true });
-            }
-        }
-    }, [board, connection]);
-
     // get data from server
     useDataRecieved(connection, useCallback((data) => {
         setAwaitingTurn(data.readyToChoose);
         setBoard(data.board);
-        checkForWin(data.hasJustFinishedSelfMove ?? false);
-    }, [checkForWin]));
+    }, []));
 
 
     const registerClick = ({ pos }: { pos: number }) => {
         if (board[pos] === "") {
             connection.sendDataToEngine({ turnEnded: true, position: pos });
-            checkForWin(true);
         }
     };
 
@@ -109,14 +79,45 @@ export class NaughtsAndCrossesMinigame extends Minigame {
 
     player1TurnEnded(pos: number) {
         this.board[pos] = this.p1token;
-        this.player1?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
+        if (!this.checkIfEnded(true)) {
+            this.player1?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
+            this.player2?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
+
+        }
     }
 
     player2TurnEnded(pos: number) {
         this.board[pos] = this.p2token;
-        this.player1?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
+        if (!this.checkIfEnded(false)) {
+            this.player1?.replyDataFromEngine({ readyToChoose: true, hasJustFinishedSelfMove: false, board: this.board });
+            this.player2?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
+        }
+    }
+
+    checkIfEnded(player1: boolean) {
+        const board = this.board
+        let win1 = board[0] === board[1] && board[0] === board[2] && board[0] !== "";
+        let win2 = board[3] === board[4] && board[3] === board[5] && board[3] !== "";
+        let win3 = board[6] === board[7] && board[6] === board[8] && board[6] !== "";
+
+        let win4 = board[0] === board[3] && board[0] === board[6] && board[0] !== "";
+        let win5 = board[1] === board[4] && board[1] === board[7] && board[1] !== "";
+        let win6 = board[2] === board[8] && board[2] === board[5] && board[2] !== "";
+
+        let win7 = board[0] === board[4] && board[0] === board[8] && board[0] !== "";
+        let win8 = board[2] === board[4] && board[2] === board[6] && board[2] !== "";
+
+
+        const hasWin = win1 || win2 || win3 || win4 || win5 || win6 || win7 || win8
+        if (hasWin) {
+            if (player1) {
+                this.engine.playerOneWin();
+            } else {
+                this.engine.playerTwoWin();
+            }
+            return true
+        }
+        return false
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
@@ -129,16 +130,15 @@ export class NaughtsAndCrossesMinigame extends Minigame {
         }
 
         // end game on a winner
-        if (data.won !== undefined) {
-            if (player.player1) {
-                this.engine.playerOneWin();
-            } else {
-                this.engine.playerTwoWin();
-            }
-            this.player1?.replyDataFromEngine({ readyToChoose: false, board: this.board });
-            this.player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
-        }
-
+        // if (data.won !== undefined) {
+        //     if (player.player1) {
+        //         this.engine.playerOneWin();
+        //     } else {
+        //         this.engine.playerTwoWin();
+        //     }
+        //     this.player1?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+        //     this.player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+        // }
         // when one player's turn ends
         if (data.turnEnded) {
             if (player.player1) {
