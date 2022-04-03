@@ -17,7 +17,7 @@ const BlackjackCard = ({ value, suit, marginDrop }: { value: number, suit: strin
   }, [])
 
   return (
-    <div className={marginDrop + " transition-all duration-1000 " + (isCardSide ? "" : "-translate-x-[1000px]")}>
+    <div className={marginDrop + " transition-transform duration-1000 " + (isCardSide ? "" : "-translate-x-[1000px]")}>
       {image !== null ? <img alt="Card" src={image} /> : null}
     </div>
   );
