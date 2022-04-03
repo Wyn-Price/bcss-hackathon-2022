@@ -3,11 +3,7 @@ import { ConnectionManager, useDataRecieved } from "../connection/ConnectionMana
 import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
 
-const RockPaperScissors = ({
-    connection,
-}: {
-    connection: ConnectionManager;
-}) => {
+const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) => {
     const [choice, setChoice] = useState(false);
 
     // send choice
@@ -53,13 +49,13 @@ export class RPSMinigame extends Minigame {
     p1choice?: string;
     p2choice?: string;
 
-    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
-        super(gameEngine, player1, player2);
-        // game setup
+    // constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+    //     super(gameEngine, player1, player2);
+    //     // game setup
 
-        // this sends the data to each client, a client
-        // receives this from the useDataReceived hook
-    }
+    //     // this sends the data to each client, a client
+    //     // receives this from the useDataReceived hook
+    // }
 
     restartGame() {
         this.p1choice = undefined;

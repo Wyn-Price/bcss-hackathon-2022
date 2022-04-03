@@ -22,16 +22,16 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     }, []));
 
     const checkForWin = (report: boolean) => {
-        let win1 = board[0] == board[1] && board[0] == board[2] && board[0] != "";
-        let win2 = board[3] == board[4] && board[3] == board[5] && board[3] != "";
-        let win3 = board[6] == board[7] && board[6] == board[8] && board[6] != "";
+        let win1 = board[0] === board[1] && board[0] === board[2] && board[0] !== "";
+        let win2 = board[3] === board[4] && board[3] === board[5] && board[3] !== "";
+        let win3 = board[6] === board[7] && board[6] === board[8] && board[6] !== "";
 
-        let win4 = board[0] == board[3] && board[0] == board[6] && board[0] != "";
-        let win5 = board[1] == board[4] && board[1] == board[7] && board[1] != "";
-        let win6 = board[2] == board[8] && board[2] == board[5] && board[2] != "";
+        let win4 = board[0] === board[3] && board[0] === board[6] && board[0] !== "";
+        let win5 = board[1] === board[4] && board[1] === board[7] && board[1] !== "";
+        let win6 = board[2] === board[8] && board[2] === board[5] && board[2] !== "";
 
-        let win7 = board[0] == board[4] && board[0] == board[8] && board[0] != "";
-        let win8 = board[2] == board[4] && board[2] == board[6] && board[2] != "";
+        let win7 = board[0] === board[4] && board[0] === board[8] && board[0] !== "";
+        let win8 = board[2] === board[4] && board[2] === board[6] && board[2] !== "";
 
         let typesOfWins = [win1, win2, win3, win4, win5, win6, win7, win8];
 
@@ -73,9 +73,6 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     );
 };
 
-const playMove = (cross: boolean) => {
-    return <div className="bg-black">{cross}</div>;
-};
 
 export default NaughtsAndCrosses;
 
@@ -107,12 +104,12 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
-        if (data.dataReady !== undefined) {
+        if (data.dataReady! === undefined) {
             player.replyDataFromEngine({ readyToChoose: true, board: this.board });
         }
 
         // end game on a winner
-        if (data.won !== undefined) {
+        if (data.won! === undefined) {
             if (player.player1) {
                 this.engine.playerOneWin();
             } else {
