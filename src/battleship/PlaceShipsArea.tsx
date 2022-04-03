@@ -10,7 +10,7 @@ export const PlaceShipsArea = () => {
         <PlacedShips />
       </Grid>
       <UnplacedShips />
-      <DebugPlaceButton />
+      {/* <DebugPlaceButton /> */}
     </div>
   )
 }
@@ -85,6 +85,12 @@ const UnplacedShips = () => {
   const allShips = [...ALL_SHIPS].filter(ship => !placedShips.some(ps => ps.ship === ship))
   return (
     <div className="flex flex-row mt-5">
+      {allShips.length === 0 && <h2 className="flex flex-row text-4xl font-bold">
+        Waiting for opponent
+        <div className="animate-bounce h-4">.</div>
+        <div className="animate-bounce h-4 animation-delay-100">.</div>
+        <div className="animate-bounce h-4 animation-delay-200">.</div>
+      </h2>}
       {allShips.map((ship, index) => (
         <div key={index}
           className={"relative flex w-full flex-row justify-center items-center h-10 p-1 m-1 rounded-md " + (selectedShip?.ship === ship ? "bg-blue-400" : "bg-green-500 hover:bg-green-300")}

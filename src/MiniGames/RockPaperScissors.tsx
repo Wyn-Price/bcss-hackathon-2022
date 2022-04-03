@@ -54,9 +54,9 @@ const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) =>
             <div className="flex h-full justify-center items-center bg-main">
                 <div className="flex flex-row text-4xl font-bold text-secondary">
                     <span>Awaiting other player</span>
-                    <div className="animate-bounce">.</div>
-                    <div className="animate-bounce">.</div>
-                    <div className="animate-bounce">.</div>
+                    <div className="animate-bounce h-4">.</div>
+                    <div className="animate-bounce h-4 animation-delay-200">.</div>
+                    <div className="animate-bounce h-4 animation-delay-400">.</div>
                 </div>
             </div>
         )

@@ -73,7 +73,12 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
                         <Square pos={number} clickable={awaitingTurn}></Square>
                     ))}
                 </div>
-                <h1 className="text-2xl font-bold">{awaitingTurn ? "Your move!" : "Waiting for opponent..."}</h1>
+                <h1 className="flex flex-row text-2xl font-bold">{awaitingTurn ? "Your move!" : <>
+                    Waiting for opponent
+                    <div className="animate-bounce h-4">.</div>
+                    <div className="animate-bounce h-4 animation-delay-200">.</div>
+                    <div className="animate-bounce h-4 animation-delay-400">.</div>
+                </>}</h1>
             </div>
 
         </div>
