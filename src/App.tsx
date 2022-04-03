@@ -63,7 +63,7 @@ const App = () => {
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
         <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
         <h1 className="absolute top-44 font-bold text-red-600 text-5xl">PARTY</h1>
-        <div className="flex flex-col p-10 rounded-md bg-gray-300">
+        <div className="flex flex-col p-10 rounded-md ">
           <button onClick={createRoom} className="font-bold p-2 m-2 rounded-md bg-red-500">
             Create Game
           </button>
