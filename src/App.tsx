@@ -195,8 +195,9 @@ const HostWaitForClientGame = ({ peer, startPlaying }: { peer: Connection, start
 
   return (
     <div>
-      Waiting for player {name}
-      <div className='bg-purple-600 w-10 ml-2' onClick={() => navigator.clipboard.writeText(name)}>Copy Link</div>
+      <div>Waiting for player {name}</div>
+      <div>{name}</div>
+      <button className='bg-purple-600 w-10 ml-2' onClick={() => navigator.clipboard.writeText(name)}>Copy Link</button>
     </div>
   )
 }
