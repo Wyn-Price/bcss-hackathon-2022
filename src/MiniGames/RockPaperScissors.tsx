@@ -53,8 +53,8 @@ const RockPaperScissors = ({
 export default RockPaperScissors;
 
 export class RPSMinigame extends Minigame {
-    p1choice?: number;
-    p2choice?: number;
+    p1choice?: string;
+    p2choice?: string;
 
     constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
         super(gameEngine, player1, player2);
@@ -62,8 +62,6 @@ export class RPSMinigame extends Minigame {
 
         // this sends the data to each client, a client
         // receives this from the useDataReceived hook
-        player1?.replyDataFromEngine({ readyToChoose: true });
-        player2?.replyDataFromEngine({ readyToChoose: true });
     }
 
     restartGame() {
@@ -75,6 +73,9 @@ export class RPSMinigame extends Minigame {
 
     dataRecieved(player: ConnectionManager, data: any): void {
         // receive the data
+        if (data.dataReady !== undefined) {
+            player.replyDataFromEngine({ readyToChoose: true });
+        }
         if (data.choice !== undefined) {
             if (player.player1) {
                 this.p1choice = data.choice;
@@ -90,16 +91,15 @@ export class RPSMinigame extends Minigame {
             // handle draw
             if (this.p1choice === this.p2choice) {
                 this.restartGame();
-            } else {
                 // determine winner
-                this.player1?.replyDataFromEngine({
-                    isInternalMessage: true,
-                    endMinigame: true,
-                });
-                this.player2?.replyDataFromEngine({
-                    isInternalMessage: true,
-                    endMinigame: true,
-                });
+            } else if (this.p1choice === "rock" && this.p2choice === "scissors") {
+                this.engine.playerOneWin();
+            } else if (this.p1choice === "scissors" && this.p2choice === "paper") {
+                this.engine.playerOneWin();
+            } else if (this.p1choice === "paper" && this.p2choice === "rock") {
+                this.engine.playerOneWin();
+            } else {
+                this.engine.playerTwoWin();
             }
         }
     }
