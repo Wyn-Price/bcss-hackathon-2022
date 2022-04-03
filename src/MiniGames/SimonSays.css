@@ -29,9 +29,11 @@
 }
 
 .startButton{
+    border: 2px solid white;
+    background-color: rgb(33,33,36);
     position:absolute;
     width:100px;
-    color:black
+    color:white;
 }
 
 .score {
