@@ -58,12 +58,6 @@ const App = () => {
     }
   }, [])
 
-  const [isTextSide, setTextSide] = useState(false)
-  const [isText2Side, setTextSide2] = useState(false)
-  useEffect(() => {
-    setTimeout(() => setTextSide(true), 1000)
-    setTimeout(() => setTextSide2(true), 2000)
-  }, [])
 
 
   if (state === "none") {
@@ -72,14 +66,14 @@ const App = () => {
         <div className="pointer-events-none animate-spin-slow duration-75 absolute h-40 w-40 top-0 right-0 p-2">
           <img className='object-contain' src={sun} alt="cannot find" />
         </div>
-        <h1 className={"absolute top-6 font-bold text-gray-600 text-5xl transition-transform duration-1000 " + (isTextSide ? "" : "translate-x-96")}>SUPER</h1>
-        <h1 className={"absolute top-14 font-bold text-9xl transition-transform duration-1000 " + (isTextSide ? "" : "-translate-x-96")}>BATTLESHIP</h1>
-        <h1 className={"absolute top-44 font-bold text-secondary text-5xl transition-transform duration-1000 " + (isTextSide ? "" : "-translate-y-96")}>PARTY</h1>
+        <h1 className={"absolute top-6 font-bold text-gray-600 text-5xl transition-transform animate-intro-right"}>SUPER</h1>
+        <h1 className={"absolute top-14 font-bold text-9xl transition-transform duration-1000 animate-intro-left"}>BATTLESHIP</h1>
+        <h1 className={"absolute top-44 font-bold text-secondary text-5xl transition-transform duration-1000 animate-intro-left"}>PARTY</h1>
         <div className="flex flex-col p-10 rounded-md ">
-          <button onClick={createRoom} className={"font-bold p-2 m-2 rounded-md bg-secondary transition-transform duration-1000 " + (isText2Side ? "" : "-translate-x-[1000px]")}>
+          <button onClick={createRoom} className={"font-bold p-2 m-2 rounded-md bg-secondary transition-transform animation-delay-200 animate-intro-right-long"}>
             Create Game
           </button>
-          <div className={"flex p-2 m-2 rounded-md bg-secondary transition-transform duration-1000 " + (isText2Side ? "" : "translate-x-[1000px]")}>
+          <div className={"flex p-2 m-2 rounded-md bg-secondary transition-transform duration-1000 animation-delay-200 animate-intro-left-long"}>
             <input className="pl-2 rounded" value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} placeholder="Code" />
             <button onClick={joinRoom} className="font-bold ml-2">
               Join Game
