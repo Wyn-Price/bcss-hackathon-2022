@@ -1,6 +1,12 @@
 import ListenableObject from "../ListenableObject"
 import { GameState } from './ConnectionManager';
 
+import Battleship from "../assets/ships/battleship.png"
+import Carrier from "../assets/ships/carrier.png"
+import Cruiser from "../assets/ships/cruiser.png"
+import Destroyer from "../assets/ships/destroyer.png"
+import Submarine from "../assets/ships/submarine.png"
+
 export type TileState = "empty" | "fire_miss" | "fire_hit"
 
 const createEmptyTiles = () =>
@@ -9,15 +15,16 @@ const createEmptyTiles = () =>
 export class Ship {
   constructor(
     readonly name: string,
-    readonly size: number
+    readonly size: number,
+    readonly imgSrc: string,
   ) { }
 }
 
-const SHIP_CARRIER = new Ship("CARRIER", 5)
-const SHIP_BATTLESHIP = new Ship("BATTLESHIP", 4)
-const SHIP_CRUISER = new Ship("CRUISER", 3)
-const SHIP_SUBMARINE = new Ship("SUBMARINE", 3)
-const SHIP_DESTROYER = new Ship("DESTROYER", 2)
+const SHIP_CARRIER = new Ship("CARRIER", 5, Carrier)
+const SHIP_BATTLESHIP = new Ship("BATTLESHIP", 4, Battleship)
+const SHIP_CRUISER = new Ship("CRUISER", 3, Cruiser)
+const SHIP_SUBMARINE = new Ship("SUBMARINE", 3, Submarine)
+const SHIP_DESTROYER = new Ship("DESTROYER", 2, Destroyer)
 
 export const findShipByName = (name: string) => {
   const ship = ALL_SHIPS.find(s => s.name === name)

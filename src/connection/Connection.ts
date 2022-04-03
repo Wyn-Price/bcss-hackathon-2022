@@ -10,6 +10,10 @@ export default class Connection {
   constructor() {
     this.socket.onmessage = e => {
       const js = JSON.parse(e.data)
+      if (js._heartbeat !== undefined) {
+        this.socket.send(JSON.stringify({ _heartbeat: Date.now() }))
+        return
+      }
       if (js.setName !== undefined) {
         this.name.value = js.setName
         return
@@ -17,9 +21,10 @@ export default class Connection {
       this.onDataRecievedListeners.forEach(d => d(js))
     }
     this.socket.onclose = () => {
-      var params = new URLSearchParams(window.location.search);
-      params.set('disconnected', 'true');
-      window.location.search = params.toString();
+      alert("CLOSED")
+      // var params = new URLSearchParams(window.location.search);
+      // params.set('disconnected', 'true');
+      // window.location.search = params.toString();
     }
   }
 

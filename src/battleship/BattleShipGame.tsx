@@ -46,7 +46,13 @@ export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerP
 //playerData={playerData} isSelf={true}
 export const Grid: FC<{ Tile: (props: { x: number, y: number }) => JSX.Element }> = ({ children, Tile }) => {
   return (
-    <div className="inline-grid grid-cols-10 grid-rows-10 bg-sky-600 w-fit p-2">
+    <div
+      className="inline-grid  bg-sky-600 w-fit p-2"
+      style={{
+        gridTemplateRows: `repeat(10, 3rem)`,
+        gridTemplateColumns: `repeat(10, 3rem)`
+      }}
+    >
       {array10.map((_, x) => array10.map((_, y) => (
         <div className="w-12 h-12" style={{
           gridColumn: `${x + 1}`,
@@ -68,18 +74,33 @@ export const PlacedShipsVisual = ({ shipPos, onClick, onContextMenu, backgroundC
 }
 ) => {
   return (
-    <div
-      onClick={onClick}
-      onContextMenu={onContextMenu}
-      className={backgroundColour} style={{
-        margin: '5px',
-        border: '1px solid black',
-        gridColumnStart: `${shipPos.gridIndex.x + 1}`,
-        gridColumnEnd: `${shipPos.gridIndex.x + 1 + (shipPos.rotated ? 0 : shipPos.ship.size)}`,
+    <>
+      <div
+        onClick={onClick}
+        onContextMenu={onContextMenu}
+        className={backgroundColour + " bg-opacity-50"} style={{
+          margin: '5px',
+          gridColumnStart: `${shipPos.gridIndex.x + 1}`,
+          gridColumnEnd: `${shipPos.gridIndex.x + 1 + (shipPos.rotated ? 0 : shipPos.ship.size)}`,
 
-        gridRowStart: `${shipPos.gridIndex.y + 1 + (shipPos.rotated ? shipPos.ship.size : 0)}`,
-        gridRowEnd: `${shipPos.gridIndex.y + 1}`,
-      }} />
+          gridRowStart: `${shipPos.gridIndex.y + 1 + (shipPos.rotated ? shipPos.ship.size : 0)}`,
+          gridRowEnd: `${shipPos.gridIndex.y + 1}`,
+        }} />
+      <div
+        onClick={onClick}
+        onContextMenu={onContextMenu}
+        className={(shipPos.rotated ? "rotate-90" : "")} style={{
+          transformOrigin: "top left",
+          width: `${3 * shipPos.ship.size}rem`,
+          gridColumn: `${shipPos.gridIndex.x + 1}`,
+
+          gridRow: `${shipPos.gridIndex.y + 1}`,
+        }} >
+        <div className={(shipPos.rotated ? "-translate-y-full" : "") + " w-full h-full flex justify-center opacity-100"}>
+          <img className="h-full w-full scale-90 opacity-100" src={shipPos.ship.imgSrc} alt="Ship" />
+        </div>
+      </div>
+    </>
   )
 
 }
