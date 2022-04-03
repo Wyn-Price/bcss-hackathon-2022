@@ -59,12 +59,10 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     };
 
     return (
-        <div id="container" className="h-full overflow-hidden bg-purple-600 mb-28">
-            <div id="header" className="flex h-28 items-center justify-center bg-purple-600">
-                <header className="flex items-center justify-center text-8xl font-bold">Naughts & Crosses</header>
-            </div>
+        <div id="container" className="flex flex-col relative h-full overflow-hidden bg-purple-600 mb-28">
+            <h1 className="absolute top-12 mx-auto w-full text-center text-6xl font-bold">NAUGHTS & CROSSES</h1>
             <div id="board" className="flex flex-col h-screen items-center justify-center">
-                <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-2 rounded-2xl">
+                <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-4 rounded-2xl">
                     {numbers.map((number) => (
                         <Square pos={number} clickable={awaitingTurn}></Square>
                     ))}
