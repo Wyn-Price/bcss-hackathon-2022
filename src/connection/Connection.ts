@@ -2,7 +2,7 @@ import ListenableObject from "../ListenableObject";
 
 export default class Connection {
 
-  readonly socket = new WebSocket("ws://localhost:9000");
+  readonly socket = new WebSocket("wss://sleepy-tor-99367.herokuapp.com");
   readonly name = new ListenableObject<string>("")
 
   readonly onDataRecievedListeners = new Set<(data: any) => void>()
