@@ -116,7 +116,7 @@ const PlacingShipsTile = ({ x, y }: { x: number, y: number }) => {
       style={{
         padding: '2px'
       }}
-      onMouseOver={() => {
+      onMouseEnter={() => {
         if (placing) {
           if (placing.rotated) {
             if (y > 10 - placing.ship.size) {
