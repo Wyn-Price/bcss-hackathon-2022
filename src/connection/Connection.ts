@@ -16,6 +16,11 @@ export default class Connection {
       }
       this.onDataRecievedListeners.forEach(d => d(js))
     }
+    this.socket.onclose = () => {
+      var params = new URLSearchParams(window.location.search);
+      params.set('disconnected', 'true');
+      window.location.search = params.toString();
+    }
   }
 
   send(data: any) {

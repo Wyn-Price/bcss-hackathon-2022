@@ -7,8 +7,6 @@ const app = express()
 expressWs(app)
 const port = 9000
 
-// app.use(express.json({ limit: "50mb" }));
-
 const unfound = {}
 
 const nameToPeer = {}
@@ -48,8 +46,22 @@ app.ws('/', (ws, res) => {
     }
   })
   ws.on("close", () => {
-    console.log("close")
-    //TODO: remove and close ws
+    if (nameToPeer[name] !== undefined) {
+      nameToPeer[name].close()
+    }
+
+    delete nameToPeer[name]
+
+    Object.keys(nameToPeer).forEach(otherName => {
+      if (nameToPeer[otherName] === ws) {
+        delete nameToPeer[otherName]
+      }
+    })
+
+    if (unfound[name] !== undefined) {
+      delete unfound[name]
+    }
+    console.log(unfound, nameToPeer)
   })
   ws.send(JSON.stringify({
     setName: name

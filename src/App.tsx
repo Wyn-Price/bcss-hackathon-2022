@@ -10,6 +10,9 @@ import { minigames, MinigameScreens } from './MiniGames/MinigameData';
 
 const defaultState = "none"
 
+const locations = new URLSearchParams(window.location.search)
+window.history.pushState({}, document.title, window.location.pathname);
+const wasDisconncted = locations.get("disconnected") === "true"
 
 const connection = new Connection()
 
@@ -18,7 +21,6 @@ const App = () => {
   const [joinCode, setJoinCode] = useState("")
   const [connectionManager, setConnectionManager] = useState<ConnectionManagerPlayer>()
   const gameEngineRef = useRef<GameEngine>()
-
 
   const playerJoinedThis = () => {
     gameEngineRef.current = new GameEngine()
@@ -47,7 +49,6 @@ const App = () => {
     })
   }
 
-  console.log(state)
 
   if (state === "none") {
     return (
@@ -57,6 +58,9 @@ const App = () => {
           <div className='flex p-2 m-2 bg-red-500'>
             <input value={joinCode} onInput={e => setJoinCode(e.currentTarget.value)} placeholder='code' />
             <button onClick={joinRoom} className='ml-2'>Join</button>
+          </div>
+          <div>
+            {wasDisconncted ? "Error: Socket Disconnected" : ""}
           </div>
         </div>
       </div>
