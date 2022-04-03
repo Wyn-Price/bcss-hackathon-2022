@@ -5,7 +5,8 @@ import expressWs from 'express-ws';
 
 const app = express()
 expressWs(app)
-const port = 9000
+const port = process.env.PORT || 9000
+console.log(process.env.PORT)
 
 const unfound = {}
 
@@ -13,6 +14,7 @@ const nameToPeer = {}
 
 app.ws('/', (ws, res) => {
   const name = getName()
+
   unfound[name] = ws
   ws.on('message', msg => {
 
