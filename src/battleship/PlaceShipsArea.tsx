@@ -126,7 +126,7 @@ const PlacingShipsTile = ({ x, y }: { x: number, y: number }) => {
           setPlacing(new ShipPosition(placing.ship, { x, y }, placing.rotated))
         }
       }} >
-      <div className=" bg-blue-200 w-full h-full ">
+      <div className=" bg-blue-200 bg-opacity-30 w-full h-full ">
         {/* {x}, {y} */}
       </div>
     </div>

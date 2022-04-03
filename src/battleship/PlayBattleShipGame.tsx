@@ -14,7 +14,7 @@ export const PlayBattleShipGame = () => {
   }, [setSelfTurn]))
   return (
     <div className="h-full flex flex-col items-center justify-center gap-10">
-      <div className="w-full flex flex-row items-center justify-center gap-10">
+      <div className="w-full flex flex-row items-center justify-center gap-[190px]">
         <GridWithShips ships={playerState.myShips} Tile={PlacingShipsTile(false, connection, playerState.myTiles)} />
         <GridWithShips Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
       </div>
@@ -59,7 +59,7 @@ const PlacingShipsTile = (isOtherPlayersAndSelfTurn: boolean, connection: Connec
             })
           }
         }}
-        className={getColourFromTile() + " w-full h-full " + (canSelect ? "hover:bg-blue-400" : "")}
+        className={getColourFromTile() + " opacity-25 hover:bg-red-200 hover:opacity-50 w-full h-full " + (canSelect ? "hover:bg-blue-400" : "")}
       >
       </div>
     </div>

@@ -5,6 +5,8 @@ import { useListenableObject } from "../ListenableObject"
 import { PlaceShipsArea } from "./PlaceShipsArea"
 import { PlayBattleShipGame } from "./PlayBattleShipGame"
 
+import GridBackground from "../assets/gridbackground.png"
+
 const array10 = Array.from({ length: 10 })
 
 
@@ -47,12 +49,26 @@ export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerP
 export const Grid: FC<{ Tile: (props: { x: number, y: number }) => JSX.Element }> = ({ children, Tile }) => {
   return (
     <div
-      className="inline-grid  bg-sky-600 w-fit p-2"
+      className="inline-grid bg-sky-600 w-fit p-2"
       style={{
         gridTemplateRows: `repeat(10, 3rem)`,
         gridTemplateColumns: `repeat(10, 3rem)`
       }}
     >
+      <div style={{
+        gridRowStart: '1',
+        gridColumnStart: '1',
+        gridRowEnd: '11',
+        gridColumnEnd: '11',
+      }}>
+        <img src={GridBackground} style={{
+          width: '840px',
+          aspectRatio: '2686/1815',
+          marginLeft: '-196px',
+          marginTop: '-75px',
+          maxWidth: 'fit-content',
+        }}></img>
+      </div>
       {array10.map((_, x) => array10.map((_, y) => (
         <div className="w-12 h-12" style={{
           gridColumn: `${x + 1}`,
