@@ -66,12 +66,12 @@ export class ReactionTimeMinigame extends Minigame {
       //Set the players reaction time
       if (player.player1) {
         this.player1ReactionTime = true
-        if (this.runningTimeout !== null) {
+        if (this.runningTimeout !== undefined) {
           this.player1ReactionTimeWasBeforeGreen = true
         }
       } else {
         this.player2ReactionTime = true
-        if (this.runningTimeout !== null) {
+        if (this.runningTimeout !== undefined) {
           this.player2ReactionTimeWasBeforeGreen = true
         }
       }
@@ -89,6 +89,7 @@ export class ReactionTimeMinigame extends Minigame {
           }, 500)
 
         } else {
+          console.log(player.player1, this.player1ReactionTimeWasBeforeGreen, this.player2ReactionTimeWasBeforeGreen)
           if (player.player1) {
             if (this.player2ReactionTimeWasBeforeGreen) {
               this.engine.playerOneWin()
