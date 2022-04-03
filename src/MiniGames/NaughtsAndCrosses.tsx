@@ -11,7 +11,7 @@ import { Minigame } from "./Minigame";
 const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) => {
     // fetched from network
     const [awaitingTurn, setAwaitingTurn] = useState(false);
-    const [board, setBoard] = React.useState(["", "", "", "", "", "", "", "", ""]);
+    const [board, setBoard] = React.useState<readonly string[]>(["", "", "", "", "", "", "", "", ""]);
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
     const checkForWin = useCallback((report: boolean) => {
@@ -41,12 +41,12 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     useDataRecieved(connection, useCallback((data) => {
         setAwaitingTurn(data.readyToChoose);
         setBoard(data.board);
-        checkForWin(false);
+        checkForWin(data.hasJustFinishedSelfMove ?? false);
     }, [checkForWin]));
 
 
     const registerClick = ({ pos }: { pos: number }) => {
-        if (board[pos] !== "") {
+        if (board[pos] === "") {
             connection.sendDataToEngine({ turnEnded: true, position: pos });
             checkForWin(true);
         }
@@ -98,14 +98,14 @@ export class NaughtsAndCrossesMinigame extends Minigame {
 
     player1TurnEnded(pos: number) {
         this.board[pos] = this.p1token;
-        this.player1?.replyDataFromEngine({ readyToChoose: false, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: true, board: this.board });
+        this.player1?.replyDataFromEngine({ readyToChoose: false, hasJustFinishedSelfMove: true, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: true,  hasJustFinishedSelfMove: false, board: this.board });
     }
 
     player2TurnEnded(pos: number) {
         this.board[pos] = this.p2token;
-        this.player1?.replyDataFromEngine({ readyToChoose: true, board: this.board });
-        this.player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
+        this.player1?.replyDataFromEngine({ readyToChoose: true,  hasJustFinishedSelfMove: false, board: this.board });
+        this.player2?.replyDataFromEngine({ readyToChoose: false,  hasJustFinishedSelfMove: true, board: this.board });
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
