@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
@@ -16,9 +16,12 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     const [p2Score, updateScore2] = React.useState(0);
 
     const [questions, setQuestions] = React.useState([]);
-    const [answers, setAnswers] = React.useState([]);
+    const [answers, setAnswers] = React.useState<readonly number[]>([]);
 
     const [winner, setWinner] = React.useState(undefined);
+
+    const empty: number[] = []
+    const [answerSet, setAnswerSet] = React.useState(empty)
 
     useDataRecieved(connection, useCallback((data) => {
         setQuestions(data.questions);
@@ -28,6 +31,12 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
         setWinner(data.winner);
     }, []));
 
+    const options = useMemo(() => {
+        var options: number[] = [Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)];
+        options.splice(Math.floor(Math.random() * 3), 0, answers[currentQuestion]);
+        return options
+    }, [answers, currentQuestion])
+
     const Question = () => {
         if (winner === undefined) {
             return (
@@ -36,7 +45,7 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
                         <header className="text-4xl font-bold">{questions[currentQuestion]} =</header>
                         <header className="text-4xl text-red-700 font-bold">?</header>
                     </div>
-                    <Selections answer={answers[currentQuestion]}></Selections>
+                    <Selections answer={answers[currentQuestion]} options={options}></Selections>
                 </div>
             );
         } else {
@@ -53,9 +62,8 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
         connection.sendDataToEngine({ p1Score: p1Score, p2Score: p2Score });
     };
 
-    const Selections = ({ answer }: { answer: number }) => {
-        var options: number[] = [Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)];
-        options.splice(Math.floor(Math.random() * 3), 0, answer);
+    const Selections = ({ answer, options }: { answer: number, options: number[] }) => {
+
 
         let gameOver = false;
         if (winner !== undefined) {
