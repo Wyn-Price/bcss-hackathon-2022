@@ -72,14 +72,14 @@ const App = () => {
         <div className="pointer-events-none animate-spin-slow duration-75 absolute h-40 w-40 top-0 right-0 p-2">
           <img className='object-contain' src={sun} alt="cannot find" />
         </div>
-        <h1 className={"absolute top-6 font-bold text-gray-600 text-5xl transition-all duration-1000 " + (isTextSide ? "" : "translate-x-96")}>SUPER</h1>
-        <h1 className={"absolute top-14 font-bold text-9xl transition-all duration-1000 " + (isTextSide ? "" : "-translate-x-96")}>BATTLESHIP</h1>
-        <h1 className={"absolute top-44 font-bold text-secondary text-5xl transition-all duration-1000 " + (isTextSide ? "" : "-translate-y-96")}>PARTY</h1>
+        <h1 className={"absolute top-6 font-bold text-gray-600 text-5xl transition-transform duration-1000 " + (isTextSide ? "" : "translate-x-96")}>SUPER</h1>
+        <h1 className={"absolute top-14 font-bold text-9xl transition-transform duration-1000 " + (isTextSide ? "" : "-translate-x-96")}>BATTLESHIP</h1>
+        <h1 className={"absolute top-44 font-bold text-secondary text-5xl transition-transform duration-1000 " + (isTextSide ? "" : "-translate-y-96")}>PARTY</h1>
         <div className="flex flex-col p-10 rounded-md ">
-          <button onClick={createRoom} className={"font-bold p-2 m-2 rounded-md bg-secondary transition-all duration-1000 " + (isText2Side ? "" : "-translate-x-[1000px]")}>
+          <button onClick={createRoom} className={"font-bold p-2 m-2 rounded-md bg-secondary transition-transform duration-1000 " + (isText2Side ? "" : "-translate-x-[1000px]")}>
             Create Game
           </button>
-          <div className={"flex p-2 m-2 rounded-md bg-secondary transition-all duration-1000 " + (isText2Side ? "" : "translate-x-[1000px]")}>
+          <div className={"flex p-2 m-2 rounded-md bg-secondary transition-transform duration-1000 " + (isText2Side ? "" : "translate-x-[1000px]")}>
             <input className="pl-2 rounded" value={joinCode} onInput={(e) => setJoinCode(e.currentTarget.value)} placeholder="Code" />
             <button onClick={joinRoom} className="font-bold ml-2">
               Join Game
@@ -87,7 +87,7 @@ const App = () => {
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
         </div>
-        <div ref={wavesRef} className="pointer-events-none absolute w-screen animate-wiggle transition-all duration-1000">
+        <div ref={wavesRef} className="pointer-events-none absolute w-screen animate-wiggle transition-transform duration-1000">
           <img className='object-fill w-full' src={waves} alt="cannot find" />
         </div>
 
