@@ -92,8 +92,6 @@ export class NaughtsAndCrossesMinigame extends Minigame {
 
         // this sends the data to each client, a client
         // receives this from the useDataReceived hook
-        player1?.replyDataFromEngine({ readyToChoose: true, board: this.board });
-        player2?.replyDataFromEngine({ readyToChoose: false, board: this.board });
     }
 
     player1TurnEnded(pos: number) {
@@ -109,6 +107,10 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
+        if (data.dataReady !== undefined) {
+            player.replyDataFromEngine({ readyToChoose: true, board: this.board });
+        }
+
         // end game on a winner
         if (data.won !== undefined) {
             if (player.player1) {
