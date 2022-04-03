@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
@@ -15,11 +15,11 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
     // get data from server
-    useDataRecieved(connection, (data) => {
+    useDataRecieved(connection, useCallback((data) => {
         setAwaitingTurn(data.readyToChoose);
         setBoard(data.board);
         checkForWin(false);
-    });
+    }, []));
 
     const checkForWin = (report: boolean) => {
         let win1 = board[0] == board[1] && board[0] == board[2] && board[0] != "";
@@ -51,7 +51,7 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
 
     const Square = ({ pos, clickable }: { pos: number; clickable: boolean }) => {
         return (
-            <div className="bg-white flex items-center justify-center rounded-full" onClick={clickable ? () => registerClick({ pos }) : () => {}}>
+            <div className="bg-white flex items-center justify-center rounded-full" onClick={clickable ? () => registerClick({ pos }) : () => { }}>
                 <header className="text-5xl text-purple-600">{board[pos]}</header>
             </div>
         );

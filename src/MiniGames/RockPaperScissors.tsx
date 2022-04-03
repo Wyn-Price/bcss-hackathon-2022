@@ -1,8 +1,5 @@
-import { useState } from "react";
-import {
-    ConnectionManager,
-    useDataRecieved,
-} from "../connection/ConnectionManager";
+import { useCallback, useState } from "react";
+import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
 
@@ -20,9 +17,9 @@ const RockPaperScissors = ({
     };
 
     // receive the card sequence
-    useDataRecieved(connection, (data) => {
+    useDataRecieved(connection, useCallback((data) => {
         setChoice(data.readyToChoose);
-    });
+    }, []));
 
     const buttonStyle =
         "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";

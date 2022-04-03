@@ -1,5 +1,5 @@
-import { createContext, FC, MouseEventHandler, useContext, useState } from "react"
-import { ALL_SHIPS, PlayerGameState, ShipPosition } from "../connection/BattleShipsGameData"
+import { createContext, FC, MouseEventHandler, useCallback, useContext } from "react"
+import { PlayerGameState, ShipPosition } from "../connection/BattleShipsGameData"
 import { ConnectionManagerPlayer, useDataRecieved } from "../connection/ConnectionManager"
 import { useListenableObject } from "../ListenableObject"
 import { PlaceShipsArea } from "./PlaceShipsArea"
@@ -23,12 +23,12 @@ export const usePlayerGameState = () => {
 
 export const BattleShipsGame = ({ connection }: { connection: ConnectionManagerPlayer }) => {
   const [gameState, setGameState] = useListenableObject(connection.playerState.gameState)
-  useDataRecieved(connection, data => {
+  useDataRecieved(connection, useCallback(data => {
     if (gameState === "placing_tiles" && data.beginGame === true) {
       setGameState("play_game")
       connection.playerState.isSelfTurn.value = data.isSelfTurn
     }
-  })
+  }, [gameState, connection, setGameState]))
   return (
     <PlayerGameStateContext.Provider value={{
       playerState: connection.playerState,

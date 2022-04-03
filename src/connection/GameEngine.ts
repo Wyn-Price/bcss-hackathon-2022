@@ -1,8 +1,7 @@
 import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
 import { Minigame } from '../MiniGames/Minigame';
 import { ConnectionManager } from './ConnectionManager';
-import { PlayerGameState, EnginePlayerGameState, findShipByName, ShipPosition, TileState } from './BattleShipsGameData';
-import { isNonNullChain } from 'typescript';
+import { EnginePlayerGameState, findShipByName, ShipPosition, TileState } from './BattleShipsGameData';
 
 
 export default class GameEngine {

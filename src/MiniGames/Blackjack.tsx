@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import BlackjackCard from "./BlackjackCard";
@@ -15,7 +15,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
     const inactive = "bg-grey-500 hover:bg-grey-700 text-white font-bold py-2 px-4 rounded";
 
     // receive the hands, re-render UI
-    useDataRecieved(connection, (data) => {
+    useDataRecieved(connection, useCallback((data) => {
         // set hands
         setHand(data.myHand);
         setScore(sum(data.myHand));
@@ -23,7 +23,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
 
         // set turn state
         setMyTurn(data.myTurn);
-    });
+    }, []));
 
     const sum: (cards: [number, string][]) => number = (cards: [number, string][]) => {
         const initialValue = 0;
@@ -38,7 +38,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
         connection.sendDataToEngine({ action: "fold" });
     };
 
-    const ignore: () => void = () => {};
+    const ignore: () => void = () => { };
 
     return (
         <div className="flex flex-row justify-center items-center min-h-screen">
@@ -99,7 +99,7 @@ export class BlackjackMinigame extends Minigame {
             randomIndex;
 
         // While there remain elements to shuffle...
-        while (currentIndex != 0) {
+        while (currentIndex !== 0) {
             // Pick a remaining element...
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
@@ -141,14 +141,14 @@ export class BlackjackMinigame extends Minigame {
             this.p1Hand.push(this.deck.pop()!);
 
             // determine win, loss or continue
-            var state = this.nextState(this.p1Hand);
+            var nextState = this.nextState(this.p1Hand);
 
             // player gets another turn
-            if (state === "continue") {
+            if (nextState === "continue") {
                 player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
 
                 // player wins, game ends
-            } else if (state === "win") {
+            } else if (nextState === "win") {
                 player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: false });
                 this.engine.playerOneWin();
                 this.endGame();
@@ -161,10 +161,10 @@ export class BlackjackMinigame extends Minigame {
             }
         } else {
             this.p2Hand.push(this.deck.pop()!);
-            var state = this.nextState(this.p2Hand);
-            if (state === "continue") {
+            var nextState2 = this.nextState(this.p2Hand);
+            if (nextState2 === "continue") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: true });
-            } else if (state === "win") {
+            } else if (nextState2 === "win") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
                 this.engine.playerTwoWin();
                 this.endGame();
@@ -212,7 +212,7 @@ export class BlackjackMinigame extends Minigame {
 
     nextState(cards: [number, string][]) {
         const total = this.sum(cards);
-        if (total == 21) {
+        if (total === 21) {
             return "win";
         } else if (total > 21) {
             return "lose";

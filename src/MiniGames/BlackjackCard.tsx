@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Context } from "react";
-
 const BlackjackCard = ({ value, suit }: { value: number; suit: string }) => {
   const images = require.context("../assets/card-pngs", true);
 
@@ -14,7 +11,7 @@ const BlackjackCard = ({ value, suit }: { value: number; suit: string }) => {
 
   return (
     <div className="max-h-100">
-      <img className="object-contain h-60" src={image} />
+      <img alt="Card" className="object-contain h-60" src={image} />
     </div>
   );
 };

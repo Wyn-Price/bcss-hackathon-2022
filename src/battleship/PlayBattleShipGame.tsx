@@ -1,4 +1,4 @@
-import { useDebugValue, useState } from "react"
+import { useCallback } from "react"
 import { Ship, ShipPosition, TileState } from "../connection/BattleShipsGameData"
 import { ConnectionManagerPlayer, useDataRecieved } from "../connection/ConnectionManager"
 import { useListenableObject } from "../ListenableObject"
@@ -7,11 +7,11 @@ import { Grid, PlacedShipsVisual, usePlayerGameState } from "./BattleShipGame"
 export const PlayBattleShipGame = () => {
   const { playerState, connection } = usePlayerGameState()
   const [isSelfTurn, setSelfTurn] = useListenableObject(connection.playerState.isSelfTurn)
-  useDataRecieved(connection, data => {
+  useDataRecieved(connection, useCallback(data => {
     if (data.isSelfTurn !== undefined) {
       setSelfTurn(data.isSelfPlaying)
     }
-  })
+  }, [setSelfTurn]))
   return (
     <div className="h-full flex flex-col items-center justify-center gap-10">
       <div className="w-full flex flex-row items-center justify-center gap-10">

@@ -1,6 +1,4 @@
-import { createContext, FC, MouseEventHandler, useContext, useState } from "react"
-import { ALL_SHIPS, PlayerGameState, ShipPosition } from "../connection/BattleShipsGameData"
-import { useDataRecieved } from "../connection/ConnectionManager"
+import { ALL_SHIPS, ShipPosition } from "../connection/BattleShipsGameData"
 import { useListenableObject } from "../ListenableObject"
 import { Grid, PlacedShipsVisual, usePlayerGameState } from "./BattleShipGame"
 

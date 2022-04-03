@@ -2,8 +2,6 @@ import { PlayerGameState } from './BattleShipsGameData';
 import { useEffect } from 'react';
 import Connection from './Connection';
 import GameEngine from './GameEngine';
-import { list } from 'postcss';
-
 
 export interface ConnectionManager {
   player1: boolean,
@@ -99,5 +97,5 @@ export const useDataRecieved = (conn: ConnectionManager, func: (data: any) => vo
     if (data.isInternalMessage === undefined) {
       func(data)
     }
-  }), [conn])
+  }), [conn, func])
 }

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import ListenableObject from "../ListenableObject"
 import { GameState } from './ConnectionManager';
 

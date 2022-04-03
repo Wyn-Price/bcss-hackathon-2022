@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
@@ -20,16 +20,16 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
 
     const [winner, setWinner] = React.useState(undefined);
 
-    useDataRecieved(connection, (data) => {
+    useDataRecieved(connection, useCallback((data) => {
         setQuestions(data.questions);
         setAnswers(data.answers);
         updateScore1(data.p1Score);
         updateScore2(data.p2Score);
         setWinner(data.winner);
-    });
+    }, []));
 
     const Question = () => {
-        if (winner == undefined) {
+        if (winner === undefined) {
             return (
                 <div className="flex flex-col items-center justify-center bg-white rounded-2xl h-fit w-96 py-10 px-5">
                     <div className="flex">
@@ -77,7 +77,7 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
         );
 
         function CheckAnswer(selected: number, answer: number) {
-            if (selected == answer) {
+            if (selected === answer) {
                 updateCurrentQuestion(currentQuestion + 1);
 
                 sendUpdatedScore();
@@ -122,6 +122,7 @@ export class MathMinigame extends Minigame {
     constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
         super(gameEngine, player1, player2);
         this.createQuestionList();
+        // eslint-disable-next-line
         this.answers = this.questions.map((question) => eval(question));
         this.p1Score = 0;
         this.p2Score = 0;
@@ -164,10 +165,10 @@ export class MathMinigame extends Minigame {
 
     // Check if someone has won
     checkForWinner() {
-        if (this.p1Score == 5) {
+        if (this.p1Score === 5) {
             this.engine.playerOneWin();
         }
-        if (this.p2Score == 5) {
+        if (this.p2Score === 5) {
             this.engine.playerTwoWin();
         }
     }

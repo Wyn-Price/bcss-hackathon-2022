@@ -1,5 +1,4 @@
-import { throws } from "assert";
-import React, { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
@@ -8,7 +7,7 @@ export const ReactionTime = ({ connection }: { connection: ConnectionManager }) 
   const [waitingForClick, setWaitingForClick] = useState(true)
   const [hasClicked, setHasClicked] = useState(false)
 
-  useDataRecieved(connection, data => {
+  useDataRecieved(connection, useCallback(data => {
     if (data.setUserToNowClick === true) {
       setWaitingForClick(false)
     }
@@ -16,7 +15,7 @@ export const ReactionTime = ({ connection }: { connection: ConnectionManager }) 
       setWaitingForClick(true)
       setHasClicked(false)
     }
-  })
+  }, []))
 
 
   // check time after screen has been pressed

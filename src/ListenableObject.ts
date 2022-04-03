@@ -1,4 +1,4 @@
-import { stat } from 'fs';
+import { useCallback } from 'react';
 import { useState, useEffect } from 'react';
 export default class ListenableObject<T> {
   private _value: T
@@ -33,8 +33,8 @@ export const useListenableObject = <T>(obj: ListenableObject<T>) => {
   }, [obj])
   return [
     state,
-    (o: T) => {
+    useCallback((o: T) => {
       obj.value = o
-    }
+    }, [obj])
   ] as const
 }
