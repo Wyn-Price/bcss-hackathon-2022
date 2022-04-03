@@ -59,10 +59,11 @@ const App = () => {
   }, [])
 
   const [isTextSide, setTextSide] = useState(false)
-  setTimeout(() => setTextSide(val => !val), 1000)
-
   const [isText2Side, setTextSide2] = useState(false)
-  setTimeout(() => setTextSide2(val => !val), 2000)
+  useEffect(() => {
+    setTimeout(() => setTextSide(true), 1000)
+    setTimeout(() => setTextSide2(true), 2000)
+  }, [])
 
 
   if (state === "none") {
