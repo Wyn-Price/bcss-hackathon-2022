@@ -1,4 +1,5 @@
 import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import waves from './assets/waves.png';
 import { BattleShipsGame } from "./battleship/BattleShipGame";
 import Connection from "./connection/Connection";
 import { ConnectionManager, ConnectionManagerPlayer, createHostManager, createRemoteGameListener, createRemoteManager } from "./connection/ConnectionManager";
@@ -51,7 +52,7 @@ const App = () => {
 
   if (state === "none") {
     return (
-      <div className="flex flex-col relative w-full h-full justify-center items-center">
+      <div className="flex flex-col relative w-full h-full justify-center items-center overflow-hidden">
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
         <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
         <h1 className="absolute top-44 font-bold text-red-600 text-5xl">PARTY</h1>
@@ -67,6 +68,10 @@ const App = () => {
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
         </div>
+        <div className="h-[100px] w-screen p-10">
+          <img className='object-fill w-full' src={waves} alt="cannot find" />
+        </div>
+
       </div>
     );
   }
