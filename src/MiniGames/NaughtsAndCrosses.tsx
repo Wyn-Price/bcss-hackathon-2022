@@ -81,12 +81,14 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     board: string[];
     p1token = "X";
     p2token = "O";
+    p1First: boolean;
 
     constructor(gameEngine: GameEngine, player1: ConnectionManager | undefined, player2: ConnectionManager | undefined, p1First: boolean) {
         super(gameEngine, player1, player2);
 
         // game setup
         this.board = ["", "", "", "", "", "", "", "", ""];
+        this.p1First = p1First;
 
         // this sends the data to each client, a client
         // receives this from the useDataReceived hook
@@ -106,7 +108,11 @@ export class NaughtsAndCrossesMinigame extends Minigame {
 
     dataRecieved(player: ConnectionManager, data: any): void {
         if (data.dataReady !== undefined) {
-            player.replyDataFromEngine({ readyToChoose: player, board: this.board });
+            if (player.player1) {
+                player.replyDataFromEngine({ readyToChoose: this.p1First, board: this.board });
+            } else {
+                player.replyDataFromEngine({ readyToChoose: !this.p1First, board: this.board });
+            }
         }
 
         // end game on a winner
