@@ -14,7 +14,7 @@ export const minigames = ["reaction-time", "math-game", "blackjack", "naughts-cr
 export const MinigameCreators: Record<typeof minigames[number], (gameEngine: GameEngine, p1: ConnectionManager | undefined, p2: ConnectionManager | undefined, player1Fired: boolean) => Minigame> = {
   "reaction-time": (ge, p1, p2) => new ReactionTimeMinigame(ge, p1, p2),
   "math-game": (ge, p1, p2) => new MathMinigame(ge, p1, p2),
-  "blackjack": (ge, p1, p2) => new BlackjackMinigame(ge, p1, p2),
+  "blackjack": (ge, p1, p2, p2f) => new BlackjackMinigame(ge, p1, p2, p2f),
   "naughts-crosses": (ge, p1, p2, p1f) => new NaughtsAndCrossesMinigame(ge, p1, p2, p1f),
   "rock-paper-scissors": (ge, p1, p2) => new RPSMinigame(ge, p1, p2),
   "simon-says": (ge, p1, p2) => new SimonSaysMinigame(ge, p1, p2)

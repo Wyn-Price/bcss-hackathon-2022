@@ -85,8 +85,9 @@ export class BlackjackMinigame extends Minigame {
     deck: [number, string][];
     p1?: ConnectionManager;
     p2?: ConnectionManager;
+    player1First: boolean
 
-    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager, player1First?: boolean) {
         super(gameEngine, player1, player2);
 
         this.deck = this.newDeck();
@@ -94,6 +95,7 @@ export class BlackjackMinigame extends Minigame {
         this.p2Hand = [];
 
         this.shuffle();
+        this.player1First = player1First ?? true
     }
 
     newDeck() {
@@ -123,10 +125,10 @@ export class BlackjackMinigame extends Minigame {
         // send the hands to each player
         if (data.dataReady !== undefined) {
             if (player.player1) {
-                player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
+                player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: this.player1First });
                 this.p1 = player;
             } else {
-                player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
+                player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: !this.player1First });
                 this.p2 = player;
             }
         }
