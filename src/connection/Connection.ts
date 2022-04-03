@@ -21,10 +21,9 @@ export default class Connection {
       this.onDataRecievedListeners.forEach(d => d(js))
     }
     this.socket.onclose = () => {
-      alert("CLOSED")
-      // var params = new URLSearchParams(window.location.search);
-      // params.set('disconnected', 'true');
-      // window.location.search = params.toString();
+      var params = new URLSearchParams(window.location.search);
+      params.set('disconnected', 'true');
+      window.location.search = params.toString();
     }
   }
 
