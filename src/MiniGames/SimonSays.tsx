@@ -44,7 +44,8 @@ export const SimonSays = ({ connection }: { connection: ConnectionManager }) => 
             copyColors.push(newColor);
             setPlay({ ...play, colors: copyColors });
         }
-    }, [isOn, play.isDisplay, play]);
+        // eslint-disable-next-line
+    }, [isOn, play.isDisplay]);
 
     const displayColors = useCallback(async () => {
         await timeout(300);

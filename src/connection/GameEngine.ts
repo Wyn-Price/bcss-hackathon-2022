@@ -53,8 +53,6 @@ export default class GameEngine {
       )
     )
 
-    console.log(isGameOver)
-
     if (isGameOver) {
       winner?.replyDataFromEngine({ isInternalMessage: true, gameOverIsWinner: true })
       loser?.replyDataFromEngine({ isInternalMessage: true, gameOverIsWinner: false })
@@ -88,25 +86,25 @@ export default class GameEngine {
     }
   }
 
-  private setGameTo(mg: typeof minigames[number]) {
+  private setGameTo(mg: typeof minigames[number], player1Fired?: boolean) {
     const dataToSend = { isInternalMessage: true, startMinigame: mg }
     this.player1?.replyDataFromEngine(dataToSend)
     this.player2?.replyDataFromEngine(dataToSend)
-    this.currentGame = MinigameCreators[mg](this, this.player1, this.player2)
+    this.currentGame = MinigameCreators[mg](this, this.player1, this.player2, player1Fired ?? true)
   }
 
   private _battleshipDataRecieved(player: ConnectionManager, data: any) {
     if (data.shipsSet !== undefined) {
       this._battleshipSetShips(player, data.shipsSet)
     } else if (data.gameTurnClickedGrid !== undefined) {
-      this._battleshipGridClicked(data.gameTurnClickedGrid)
+      this._battleshipGridClicked(player.player1, data.gameTurnClickedGrid)
     }
   }
 
-  private _battleshipGridClicked(gameTurnClickedGrid: { x: number; y: number }) {
+  private _battleshipGridClicked(player1Fired: boolean, gameTurnClickedGrid: { x: number; y: number }) {
     this.gridPositionInQuestion = gameTurnClickedGrid
     const minigame = minigames[Math.floor(minigames.length * Math.random())]
-    this.setGameTo(minigame)
+    this.setGameTo(minigame, player1Fired)
   }
 
   private _battleshipSetShips(player: ConnectionManager, setShips: {

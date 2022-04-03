@@ -82,7 +82,7 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     p1token = "X";
     p2token = "O";
 
-    constructor(gameEngine: GameEngine, player1?: ConnectionManager, player2?: ConnectionManager) {
+    constructor(gameEngine: GameEngine, player1: ConnectionManager | undefined, player2: ConnectionManager | undefined, p1First: boolean) {
         super(gameEngine, player1, player2);
 
         // game setup
@@ -105,12 +105,12 @@ export class NaughtsAndCrossesMinigame extends Minigame {
     }
 
     dataRecieved(player: ConnectionManager, data: any): void {
-        if (data.dataReady! === undefined) {
-            player.replyDataFromEngine({ readyToChoose: true, board: this.board });
+        if (data.dataReady !== undefined) {
+            player.replyDataFromEngine({ readyToChoose: player, board: this.board });
         }
 
         // end game on a winner
-        if (data.won! === undefined) {
+        if (data.won !== undefined) {
             if (player.player1) {
                 this.engine.playerOneWin();
             } else {
