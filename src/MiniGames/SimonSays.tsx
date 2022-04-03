@@ -34,7 +34,7 @@ export const SimonSays = ({ connection }: { connection: ConnectionManager }) => 
         } else {
             setPlay(initialPlay);
         }
-    }, [isOn, initialPlay]);
+    }, [isOn]);
 
     useEffect(() => {
         if (isOn && play.isDisplay) { /* If the game is on and the display is on while playing */
@@ -44,7 +44,7 @@ export const SimonSays = ({ connection }: { connection: ConnectionManager }) => 
             copyColors.push(newColor);
             setPlay({ ...play, colors: copyColors });
         }
-    }, [isOn, play.isDisplay, listOfColors, play]);
+    }, [isOn, play.isDisplay, play]);
 
     const displayColors = useCallback(async () => {
         await timeout(300);
