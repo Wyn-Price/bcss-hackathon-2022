@@ -15,8 +15,8 @@ export const PlayBattleShipGame = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center gap-10">
       <div className="w-full flex flex-row items-center justify-center gap-[190px]">
-        <GridWithShips ships={playerState.myShips} Tile={PlacingShipsTile(false, connection, playerState.myTiles)} />
-        <GridWithShips Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
+        <GridWithShips ships={playerState.myShips} overlayTiles={playerState.myTiles} Tile={PlacingShipsTile(false, connection, playerState.myTiles)} />
+        <GridWithShips overlayTiles={playerState.otherTiles} Tile={PlacingShipsTile(isSelfTurn, connection, playerState.otherTiles)} />
       </div>
       <div>{isSelfTurn ? "Your Turn" : "Their Turn"}</div>
 
@@ -25,24 +25,42 @@ export const PlayBattleShipGame = () => {
   )
 }
 
-const GridWithShips = ({ ships, Tile }: { ships?: Map<Ship, ShipPosition>, Tile: (props: { x: number, y: number }) => JSX.Element }) => {
+const GridWithShips = ({ ships, overlayTiles, Tile }: { ships?: Map<Ship, ShipPosition>, overlayTiles: readonly TileState[][], Tile: (props: { x: number, y: number }) => JSX.Element }) => {
   return (
     <Grid Tile={Tile}>
       {ships && Array.from(ships.values()).map((pos, index) => <PlacedShipsVisual key={index} shipPos={pos} />)}
+      {overlayTiles.flatMap((outerArray, outerIndex) =>
+        outerArray.map((tile, innerIndex) => ({ tile, innerIndex }))
+          .filter(({ tile }) => tile !== "empty")
+          .map(({ tile, innerIndex }) => {
+            return (
+              <div
+                className={"pointer-events-none z-10 m-2.5 w-7 h-7 rounded-full " + (tile === "fire_hit" ? "bg-red-500" : "bg-white")}
+                style={{
+                  gridRow: `${innerIndex + 1}`,
+                  gridColumn: `${outerIndex + 1}`
+                }}
+              >
+              </div>
+            )
+          })
+      )}
     </Grid>
   )
 }
+
+
 
 const PlacingShipsTile = (isOtherPlayersAndSelfTurn: boolean, connection: ConnectionManagerPlayer, tiles: readonly TileState[][]) => ({ x, y }: { x: number, y: number }) => {
   const tile = tiles[x][y]
   const getColourFromTile = () => {
     if (tile === "empty") {
-      return "bg-blue-200"
+      return "bg-blue-200 opacity-25"
     }
     if (tile === "fire_hit") {
-      return "bg-red-800"
+      return "bg-red-800 opacity-30"
     }
-    return "bg-white"
+    return "bg-white opacity-30"
   }
   const canSelect = isOtherPlayersAndSelfTurn && tile === "empty"
   return (
@@ -59,7 +77,7 @@ const PlacingShipsTile = (isOtherPlayersAndSelfTurn: boolean, connection: Connec
             })
           }
         }}
-        className={getColourFromTile() + " opacity-25 hover:bg-red-200 hover:opacity-50 w-full h-full " + (canSelect ? "hover:bg-blue-400" : "")}
+        className={getColourFromTile() + " hover:bg-red-200 hover:opacity-50 w-full h-full " + (canSelect ? "hover:bg-blue-400" : "")}
       >
       </div>
     </div>
