@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import star from '../assets/crown.png';
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
 import GameEngine from "../connection/GameEngine";
 import "../stylesheets/index.css";
@@ -99,6 +100,7 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
     return (
         <div className="h-screen flex bg-main justify-evenly">
             <div className="flex flex-col w-1/4 items-center justify-center">
+                {p1Score > p2Score ? <img className="h-[100px] w-[100px]" src={star}></img> : ""}
                 <h1 className="text-4xl font-bold text-secondary">Player 1</h1>
                 <h2 className="text-4xl text-secondary">{p1Score} / 5</h2>
             </div>
@@ -113,6 +115,7 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
             </div>
 
             <div className="flex flex-col w-1/4 items-center justify-center">
+                {p2Score > p1Score ? <img className="h-[100px] w-[100px]" src={star}></img> : ""}
                 <h1 className="text-4xl font-bold text-secondary">Player 2</h1>
                 <h2 className="text-4xl text-secondary">{p2Score} / 5</h2>
             </div>
