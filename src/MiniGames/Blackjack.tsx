@@ -146,6 +146,7 @@ export class BlackjackMinigame extends Minigame {
             // player gets another turn
             if (nextState === "continue") {
                 player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
+                this.player2.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false})
 
                 // player wins, game ends
             } else if (nextState === "win") {
@@ -164,6 +165,7 @@ export class BlackjackMinigame extends Minigame {
             var nextState2 = this.nextState(this.p2Hand);
             if (nextState2 === "continue") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: true });
+                this.player1.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: false})
             } else if (nextState2 === "win") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
                 this.engine.playerTwoWin();
