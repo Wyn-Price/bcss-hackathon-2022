@@ -83,7 +83,6 @@ policy
 series
 thought
 basis
-boyfriend
 direction
 strategy
 technology
@@ -92,7 +91,6 @@ camera
 freedom
 paper
 environment
-child
 instance
 month
 truth
@@ -209,7 +207,6 @@ recipe
 studio
 topic
 collection
-depression
 imagination
 passion
 percentage
@@ -250,7 +247,6 @@ preparation
 steak
 union
 agreement
-cancer
 currency
 employment
 engineering
@@ -279,7 +275,6 @@ protection
 suggestion
 tension
 variation
-anxiety
 atmosphere
 awareness
 bath
@@ -313,7 +308,6 @@ feedback
 guitar
 homework
 leader
-mom
 outcome
 permission
 presentation
@@ -376,7 +370,6 @@ error
 explanation
 farmer
 gate
-girl
 hall
 historian
 hospital
@@ -394,7 +387,6 @@ reception
 replacement
 revolution
 river
-son
 speech
 tea
 village
@@ -411,7 +403,6 @@ conclusion
 contribution
 cookie
 courage
-dad
 desk
 drawer
 establishment
@@ -465,7 +456,6 @@ fortune
 friendship
 funeral
 gene
-girlfriend
 hat
 indication
 intention
@@ -639,7 +629,6 @@ profit
 rent
 speed
 style
-war
 bank
 craft
 half
@@ -822,7 +811,6 @@ spirit
 street
 tree
 wave
-belt
 bench
 commission
 copy
@@ -841,7 +829,6 @@ angle
 blue
 breakfast
 confidence
-daughter
 degree
 doctor
 dot
@@ -885,7 +872,6 @@ pain
 pleasure
 score
 screw
-sex
 shop
 shower
 suit
@@ -1029,7 +1015,6 @@ bar
 bell
 bike
 blame
-boy
 brick
 chair
 closet
@@ -1359,9 +1344,6 @@ remote
 total
 treat
 vast
-abuse
-beat
-burn
 deposit
 print
 raise
