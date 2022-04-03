@@ -105,6 +105,7 @@ const App = () => {
 // }
 const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
   const [minigame, setMinigame] = useState<typeof minigames[number] | null>(null);
+  const [minigameWinLoose, setMinigameWinLoose] = useState<"winner" | "looser">()
   const [gameOver, setGameOver] = useState<"winner" | "loser">();
 
   const [timesResetHack, setTimesResetHack] = useState(0);
@@ -138,6 +139,7 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
           if (didPlayerWhoseTurnItWasWin || data.newTile !== "fire_hit") {
             conn.playerState.isSelfTurn.value = !conn.playerState.isSelfTurn.value;
           }
+          setMinigameWinLoose(data.self ? "looser" : "winner")
           setMinigame(null);
         }
         if (data.startMinigame !== undefined) {
@@ -147,6 +149,14 @@ const GameArea = ({ conn }: { conn: ConnectionManagerPlayer }) => {
     }, true),
     [conn, timesResetHack]
   );
+  if (minigameWinLoose !== undefined) {
+    setTimeout(setMinigameWinLoose, 1500)
+    return (
+      <div className={'flex flex-col items-center justify-center h-full p-10 ' + (minigameWinLoose === "winner" ? "bg-green-400" : "bg-red-400")}>
+        <div className='text-4xl p-2 my-2 font-bold'>{minigameWinLoose === "winner" ? "You Won" : "You Lost"}</div>
+      </div>
+    )
+  }
   if (gameOver !== undefined) {
     const playAgain = () => {
       conn.sendDataToEngine({ resetBothClients: true });
