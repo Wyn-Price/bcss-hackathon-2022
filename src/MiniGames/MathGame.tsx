@@ -64,10 +64,10 @@ export const MathGame = ({ connection }: { connection: ConnectionManager }) => {
 
         return (
             <div>
-                <div className={(gameOver ? "hidden" : "") + " m-3 mt-5 bg-white"}>
+                <div className={(gameOver ? "hidden" : "") + "mx-2 mb-3 mt-5 bg-white grid grid-cols-2 grid-rows-2"}>
                     {options.map((option) => (
                         <div
-                            className="flex items-center cursor-pointer hover:bg-grey-200 justify-center border-2 m-2 p-2 rounded-full"
+                            className="flex items-center cursor-pointer hover:bg-gray-100 justify-center border-2 m-5 p-2 rounded-full"
                             onClick={() => CheckAnswer(option, answer)}>
                             <header className="text-3xl">{option}</header>
                         </div>
