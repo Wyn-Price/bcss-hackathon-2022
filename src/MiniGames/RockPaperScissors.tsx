@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { ConnectionManager, useDataRecieved } from "../connection/ConnectionManager";
-import GameEngine from "../connection/GameEngine";
 import { Minigame } from "./Minigame";
 
 const RockPaperScissors = ({ connection }: { connection: ConnectionManager }) => {

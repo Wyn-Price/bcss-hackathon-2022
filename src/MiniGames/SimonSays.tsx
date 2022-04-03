@@ -2,16 +2,15 @@ import './SimonSays.css'
 import ColorCard from './components/ColorCard';
 import { useState, useEffect, useCallback } from "react"
 import timeout from "./utils/util";
-import GameEngine from "../connection/GameEngine";
 import { Minigame } from './Minigame';
 import { ConnectionManager } from '../connection/ConnectionManager';
+
+const listOfColors = ["green", "red", "yellow", "blue"];
 
 export const SimonSays = ({ connection }: { connection: ConnectionManager }) => {
 
     //Setting the initial state of the button to be false. Later on, when we define the button, if it's clicked, we set it to true
     const [isOn, setIsOn] = useState(false); /* If we use 'useState' constantly, it becomes very difficult to manage each state. Therefore, we create variable called 'initialPlay' */
-
-    const listOfColors = ["green", "red", "yellow", "blue"];
 
     /* initialPlay initialises all the states we need. It holds all the states we need when we're playing in real time */
     const initialPlay = {
@@ -37,7 +36,7 @@ export const SimonSays = ({ connection }: { connection: ConnectionManager }) => 
         } else {
             setPlay(initialPlay);
         }
-    }, [isOn]);
+    }, [isOn, initialPlay]);
 
     useEffect(() => {
         if (isOn && play.isDisplay) { /* If the game is on and the display is on while playing */

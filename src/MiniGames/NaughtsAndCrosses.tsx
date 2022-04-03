@@ -14,14 +14,7 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     const [board, setBoard] = React.useState(["", "", "", "", "", "", "", "", ""]);
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-    // get data from server
-    useDataRecieved(connection, useCallback((data) => {
-        setAwaitingTurn(data.readyToChoose);
-        setBoard(data.board);
-        checkForWin(false);
-    }, []));
-
-    const checkForWin = (report: boolean) => {
+    const checkForWin = useCallback((report: boolean) => {
         let win1 = board[0] === board[1] && board[0] === board[2] && board[0] !== "";
         let win2 = board[3] === board[4] && board[3] === board[5] && board[3] !== "";
         let win3 = board[6] === board[7] && board[6] === board[8] && board[6] !== "";
@@ -42,7 +35,15 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
                 connection.sendDataToEngine({ won: true });
             }
         }
-    };
+    }, [board, connection]);
+
+    // get data from server
+    useDataRecieved(connection, useCallback((data) => {
+        setAwaitingTurn(data.readyToChoose);
+        setBoard(data.board);
+        checkForWin(false);
+    }, [checkForWin]));
+
 
     const registerClick = ({ pos }: { pos: number }) => {
         checkForWin(true);
