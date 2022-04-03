@@ -103,7 +103,7 @@ export default class GameEngine {
 
   private _battleshipGridClicked(player1Fired: boolean, gameTurnClickedGrid: { x: number; y: number }) {
     this.gridPositionInQuestion = gameTurnClickedGrid
-    const minigame = minigames[5];//minigames[Math.floor(minigames.length * Math.random())]
+    const minigame = minigames[Math.floor(minigames.length * Math.random())]
     this.setGameTo(minigame, player1Fired)
   }
 
