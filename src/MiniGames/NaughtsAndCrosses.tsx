@@ -59,17 +59,19 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     };
 
     return (
-        <div id="container" className="h-full overflow-hidden bg-purple-600">
+        <div id="container" className="h-full overflow-hidden bg-purple-600 mb-28">
             <div id="header" className="flex h-28 items-center justify-center bg-purple-600">
                 <header className="flex items-center justify-center text-8xl">Naughts and Crosses</header>
             </div>
-            <div id="board" className="flex h-screen items-center justify-center">
-                <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-2 rounded-2xl mb-28">
+            <div id="board" className="flex flex-col h-screen items-center justify-center">
+                <div className="grid grid-rows-3 grid-cols-3 gap-4 h-96 w-96 bg-black p-2 rounded-2xl">
                     {numbers.map((number) => (
                         <Square pos={number} clickable={awaitingTurn}></Square>
                     ))}
                 </div>
+                <h1>{awaitingTurn ? "Your move!" : "Waiting for opponent..."}</h1>
             </div>
+            
         </div>
     );
 };
