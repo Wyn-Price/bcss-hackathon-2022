@@ -63,7 +63,7 @@ app.ws('/', (ws, res) => {
     if (unfound[name] !== undefined) {
       delete unfound[name]
     }
-    console.log(unfound, nameToPeer)
+    console.log(Object.keys(unfound).length, Object.keys(nameToPeer).length)
   })
   ws.send(JSON.stringify({
     setName: name
