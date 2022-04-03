@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.38dd8d3e.css",
-    "main.js": "/static/js/main.b6d365b7.js",
+    "main.css": "/static/css/main.e2a2b05e.css",
+    "main.js": "/static/js/main.8a3d24f3.js",
     "static/js/787.6dc5d524.chunk.js": "/static/js/787.6dc5d524.chunk.js",
     "static/media/gridbackground.png": "/static/media/gridbackground.bc6ea03cce1e190af041.png",
     "static/media/fireworks.png": "/static/media/fireworks.d9a73224e4a237346128.png",
@@ -17,6 +17,7 @@
     "static/media/12S.png": "/static/media/12S.c9de6912454b7282e58b.png",
     "static/media/13S.png": "/static/media/13S.fda148e5425c266a3a81.png",
     "static/media/12D.png": "/static/media/12D.911390541adb6dfd350a.png",
+    "static/media/waves.png": "/static/media/waves.d23d8d354913aeeaddc4.png",
     "static/media/1S.png": "/static/media/1S.a24049b6038d0a8b2cc2.png",
     "static/media/10C.png": "/static/media/10C.1e849b9251f1cca97075.png",
     "static/media/9C.png": "/static/media/9C.8e317f622f55579618f6.png",
@@ -64,12 +65,12 @@
     "static/media/cruiser.png": "/static/media/cruiser.8cd37cb9319f250adf49.png",
     "static/media/carrier.png": "/static/media/carrier.91732a012a11c66f1049.png",
     "index.html": "/index.html",
-    "main.38dd8d3e.css.map": "/static/css/main.38dd8d3e.css.map",
-    "main.b6d365b7.js.map": "/static/js/main.b6d365b7.js.map",
+    "main.e2a2b05e.css.map": "/static/css/main.e2a2b05e.css.map",
+    "main.8a3d24f3.js.map": "/static/js/main.8a3d24f3.js.map",
     "787.6dc5d524.chunk.js.map": "/static/js/787.6dc5d524.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.38dd8d3e.css",
-    "static/js/main.b6d365b7.js"
+    "static/css/main.e2a2b05e.css",
+    "static/js/main.8a3d24f3.js"
   ]
 }
