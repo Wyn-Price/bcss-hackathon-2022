@@ -1,4 +1,4 @@
-import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import { SVGProps, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import waves from './assets/waves.png';
 import { BattleShipsGame } from "./battleship/BattleShipGame";
 import Connection from "./connection/Connection";
@@ -50,9 +50,16 @@ const App = () => {
     });
   };
 
+  const wavesRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (wavesRef.current) {
+      wavesRef.current.style.marginTop = "1200px"
+    }
+  }, [])
+
   if (state === "none") {
     return (
-      <div className="flex flex-col relative w-full h-full justify-center items-center overflow-hidden">
+      <div className="flex flex-col absolute w-full h-full justify-center bg-blue-300 items-center overflow-hidden">
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
         <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
         <h1 className="absolute top-44 font-bold text-red-600 text-5xl">PARTY</h1>
@@ -68,7 +75,7 @@ const App = () => {
           </div>
           <div>{wasDisconncted ? "Error: Socket Disconnected" : ""}</div>
         </div>
-        <div className="h-[100px] w-screen p-10">
+        <div ref={wavesRef} className="absolute w-screen transition-all duration-1000">
           <img className='object-fill w-full' src={waves} alt="cannot find" />
         </div>
 
