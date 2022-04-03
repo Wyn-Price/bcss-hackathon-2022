@@ -43,7 +43,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
     return (
         <div className="flex flex-row justify-center items-center min-h-screen">
             <div className="flex flex-col justify-center items-center w-40">
-                <h1>Opponent's last card:</h1>
+                <h1>{opponentHand.length === 0 ? "" : "Opponent's last card:"}</h1>
                 <BlackjackCard
                     value={opponentHand.length === 0 ? 0 : opponentHand[opponentHand.length - 1][0]}
                     suit={opponentHand.length === 0 ? "" : opponentHand[opponentHand.length - 1][1]}
@@ -62,7 +62,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
                 </div>
             </div>
             <div className="flex flex-col justify-center items-center w-40">
-                <h1>Last card:</h1>
+                <h1>{hand.length === 0 ? "" : "Last card:"}</h1>
                 <BlackjackCard value={hand.length === 0 ? 0 : hand[hand.length - 1][0]} suit={hand.length === 0 ? "" : hand[hand.length - 1][1]} />
             </div>
         </div>

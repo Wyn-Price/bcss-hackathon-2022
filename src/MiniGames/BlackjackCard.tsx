@@ -11,7 +11,7 @@ const BlackjackCard = ({ value, suit }: { value: number; suit: string }) => {
 
   return (
     <div className="max-h-100">
-      <img alt="Card" className="object-contain h-60" src={image} />
+      {image !== null ? <img alt="Card" className="object-contain h-60" src={image} /> : null }
     </div>
   );
 };
