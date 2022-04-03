@@ -6,20 +6,18 @@ import { Minigame } from './Minigame';
 import { ConnectionManager } from '../connection/ConnectionManager';
 
 const listOfColors = ["green", "red", "yellow", "blue"];
-
+/* initialPlay initialises all the states we need. It holds all the states we need when we're playing in real time */
+const initialPlay = {
+    isDisplay: false,
+    colors: [] as string[],
+    score: 0,
+    userPlay: false,
+    userColors: [] as string[],
+}
 export const SimonSays = ({ connection }: { connection: ConnectionManager }) => {
 
     //Setting the initial state of the button to be false. Later on, when we define the button, if it's clicked, we set it to true
     const [isOn, setIsOn] = useState(false); /* If we use 'useState' constantly, it becomes very difficult to manage each state. Therefore, we create variable called 'initialPlay' */
-
-    /* initialPlay initialises all the states we need. It holds all the states we need when we're playing in real time */
-    const initialPlay = {
-        isDisplay: false,
-        colors: [] as string[],
-        score: 0,
-        userPlay: false,
-        userColors: [] as string[],
-    };
 
     const [play, setPlay] = useState(initialPlay);
     const [flashColor, setFlashColor] = useState("");
