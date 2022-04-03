@@ -161,7 +161,7 @@ export class MathMinigame extends Minigame {
                 p1Score: this.p1Score,
                 p2Score: this.p2Score,
             });
-            this.player1.replyDataFromEngine({
+            this.player2.replyDataFromEngine({
                 updatePlayerScores: true,
                 p1Score: this.p1Score,
                 p2Score: this.p2Score,
