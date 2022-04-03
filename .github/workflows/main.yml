@@ -16,6 +16,8 @@ jobs:
         run: |
           yarn install
           yarn build
+        env:
+          CI: false
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5
