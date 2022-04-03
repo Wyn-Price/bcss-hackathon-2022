@@ -1,7 +1,8 @@
-const BlackjackCard = ({ value, suit }: { value: number; suit: string }) => {
+const BlackjackCard = ({ value, suit, marginDrop }: { value: number, suit: string, marginDrop: string }) => {
   const images = require.context("../assets/card-pngs", true);
 
   // adding dynamic paths
+  console.log(marginDrop)
   let image;
   try {
     image = images("./" + value + suit + ".png");
@@ -10,8 +11,8 @@ const BlackjackCard = ({ value, suit }: { value: number; suit: string }) => {
   }
 
   return (
-    <div className="max-h-100">
-      {image !== null ? <img alt="Card" className="object-contain h-60" src={image} /> : null }
+    <div className={marginDrop}>
+      {image !== null ? <img alt="Card" src={image} /> : null}
     </div>
   );
 };

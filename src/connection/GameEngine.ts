@@ -1,7 +1,7 @@
-import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
 import { Minigame } from '../MiniGames/Minigame';
-import { ConnectionManager } from './ConnectionManager';
+import { MinigameCreators, minigames } from '../MiniGames/MinigameData';
 import { EnginePlayerGameState, findShipByName, ShipPosition, TileState } from './BattleShipsGameData';
+import { ConnectionManager } from './ConnectionManager';
 
 
 export default class GameEngine {

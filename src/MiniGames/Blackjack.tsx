@@ -14,6 +14,8 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
     const active = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
     const inactive = "bg-grey-500 hover:bg-grey-700 text-white font-bold py-2 px-4 rounded";
 
+    const tailwindPositions = ["top-0", "top-8", "top-16", "top-24", "top-32"]
+
     // receive the hands, re-render UI
     useDataRecieved(connection, useCallback((data) => {
         // set hands
@@ -47,6 +49,7 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
                 <BlackjackCard
                     value={opponentHand.length === 0 ? 0 : opponentHand[opponentHand.length - 1][0]}
                     suit={opponentHand.length === 0 ? "" : opponentHand[opponentHand.length - 1][1]}
+                    marginDrop={"max-h-300"}
                 />
             </div>
             <div className="flex flex-col gap-20 items-center m-40">
@@ -61,9 +64,13 @@ const Blackjack = ({ connection }: { connection: ConnectionManager }) => {
                     </button>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center w-40">
-                <h1>{hand.length === 0 ? "" : "Last card:"}</h1>
-                <BlackjackCard value={hand.length === 0 ? 0 : hand[hand.length - 1][0]} suit={hand.length === 0 ? "" : hand[hand.length - 1][1]} />
+            <div className="flex flex-col h-1/2 items-center">
+                <h1>{hand?.length === 0 ? "" : "Last card:"}</h1>
+                <div className="w-40 h-96 relative">
+
+                    {hand?.length === 0 ? "" :
+                        hand?.map((card, index) => (<BlackjackCard value={card[0]} suit={card[1]} marginDrop={("h-screen absolute " + tailwindPositions[index])} ></BlackjackCard>))}
+                </div>
             </div>
         </div>
     );
@@ -146,7 +153,7 @@ export class BlackjackMinigame extends Minigame {
             // player gets another turn
             if (nextState === "continue") {
                 player.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: true });
-                this.player2.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false})
+                this.player2.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false })
 
                 // player wins, game ends
             } else if (nextState === "win") {
@@ -165,7 +172,7 @@ export class BlackjackMinigame extends Minigame {
             var nextState2 = this.nextState(this.p2Hand);
             if (nextState2 === "continue") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: true });
-                this.player1.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: false})
+                this.player1.replyDataFromEngine({ myHand: this.p1Hand, otherHand: this.p2Hand, myTurn: false })
             } else if (nextState2 === "win") {
                 player.replyDataFromEngine({ myHand: this.p2Hand, otherHand: this.p1Hand, myTurn: false });
                 this.engine.playerTwoWin();
