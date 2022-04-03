@@ -1,4 +1,5 @@
-import { SVGProps, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import sun from './assets/sun.png';
 import waves from './assets/waves.png';
 import { BattleShipsGame } from "./battleship/BattleShipGame";
 import Connection from "./connection/Connection";
@@ -57,9 +58,14 @@ const App = () => {
     }
   }, [])
 
+
+
   if (state === "none") {
     return (
-      <div className="flex flex-col absolute w-full h-full justify-center bg-main items-center overflow-hidden">
+      <div className="flex flex-col absolute w-full h-full justify-center bg-blue-300 items-center overflow-hidden">
+        <div className="pointer-events-none animate-spin duration-75 absolute h-40 w-40 top-0 right-0 p-2">
+          <img className='object-contain' src={sun} alt="cannot find" />
+        </div>
         <h1 className="absolute top-6 font-bold text-gray-600 text-5xl">SUPER</h1>
         <h1 className="absolute top-14 font-bold text-9xl">BATTLESHIP</h1>
         <h1 className="absolute top-44 font-bold text-secondary text-5xl">PARTY</h1>
