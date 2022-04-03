@@ -14,6 +14,8 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
     const [board, setBoard] = React.useState<readonly string[]>(["", "", "", "", "", "", "", "", ""]);
     let numbers: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
+
+
     const checkForWin = useCallback((report: boolean) => {
         let win1 = board[0] === board[1] && board[0] === board[2] && board[0] !== "";
         let win2 = board[3] === board[4] && board[3] === board[5] && board[3] !== "";
@@ -21,7 +23,7 @@ const NaughtsAndCrosses = ({ connection }: { connection: ConnectionManager }) =>
 
         let win4 = board[0] === board[3] && board[0] === board[6] && board[0] !== "";
         let win5 = board[1] === board[4] && board[1] === board[7] && board[1] !== "";
-        let win6 = board[2] === board[8] && board[2] === board[5] && board[2] !== "";
+        let win6 = board[2] === board[5] && board[2] === board[8] && board[2] !== "";
 
         let win7 = board[0] === board[4] && board[0] === board[8] && board[0] !== "";
         let win8 = board[2] === board[4] && board[2] === board[6] && board[2] !== "";
